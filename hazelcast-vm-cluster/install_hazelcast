@@ -3,8 +3,7 @@ MIN_HEAP_SIZE=$1
 MAX_HEAP_SIZE=$2
 sudo apt-get update -y
 sudo apt-get install default-jdk -y
-sudo apt-get install maven2 -y
-sudo mvn install
+sudo apt-get install maven -y
 
 #### minimum heap size
 if [ "x$MIN_HEAP_SIZE" = "x" ]
@@ -28,4 +27,6 @@ sudo sh -c 'echo "JAVA_OPTIONS=$JAVA_OPTS" >> /etc/environment'
 # create the hazelcast home directory
 sudo mkdir /var/hazelcast
 sudo cp pom.xml /var/hazelcast
+sudo mvn install:install-file -Dfile=hazelcast-azure-1.2.1.jar -DgroupId=com.hazelcast.azure -DartifactId=hazelcast-azure -Dversion=1.2.1 -Dpackaging=jar
+sudo mvn install
 sudo cp ./hazelcast.xml /var/hazelcast/
