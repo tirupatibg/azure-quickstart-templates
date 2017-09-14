@@ -175,7 +175,7 @@
     "apiVersion": "2015-05-01-preview",
     "bootstrapFiles": [
       "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
-      "[concat(parameters('templateBaseUrl'), 'hazelcast-server.conf')]",
+      "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
       "[concat(parameters('templateBaseUrl'), 'hazelcast.xml')]",
       "[concat(parameters('templateBaseUrl'), 'install_hazelcast')]",
       "[concat(parameters('templateBaseUrl'), 'logging.properties')]",

@@ -1,0 +1,11 @@
+[Unit]
+Description=Hazelcast service
+
+[Service]
+Environment= MAVEN_OPTS=-server
+WorkingDirectory=/var/hazelcast
+ExecStart=/usr/bin/mvn -X exec:java
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

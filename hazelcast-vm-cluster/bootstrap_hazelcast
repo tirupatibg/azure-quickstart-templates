@@ -14,5 +14,6 @@ chmod +x install_hazelcast
 chmod +x modify_configuration
 ./modify_configuration --cluster-name=$CLUSTER_NAME --cluster-password=$CLUSTER_PASSWORD --subscription-id=$SUBSCRIPTION_ID --aad-client-id=$AAD_CLIENT_ID --aad-client-secret=$AAD_CLIENT_SECRET --tenant-id=$AAD_TENANT_ID --group-name=$GROUP_NAME --cluster-tag=$CLUSTER_TAG --filename=hazelcast.xml
 ./install_hazelcast $MIN_HEAP_SIZE $MAX_HEAP_SIZE
-sudo cp ./hazelcast-server.conf /etc/init/
-sudo service hazelcast-server start
+sudo cp ./hazelcast-server.service /etc/systemd/system
+sudo systemctl start hazelcast-server.service
+sudo systemctl enable hazelcast-server.service
