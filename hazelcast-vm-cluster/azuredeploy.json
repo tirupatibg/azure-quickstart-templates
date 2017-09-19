@@ -97,6 +97,12 @@
         "description": "Azure Active Directory Service Principal tenant ID"
       }
     },
+    "hzrTagValue": {
+      "type": "string",
+      "metadata": {
+        "description": "Tag value to be used for hzr key"
+      }
+    },
     "vmSize": {
       "type": "string",
       "metadata": {
@@ -190,7 +196,7 @@
     "apiVersion": "[variables('apiVersion')]",
     "location": "[resourceGroup().location]",
     "tags": {
-        "hzr": "v1"
+        "hzr": "[parameters('hzrTagValue')]"
       },    
      "properties": {
       "accountType": "[variables('storageAccountType')]"
@@ -201,7 +207,7 @@
     "name": "[variables('publicIPAddressName')]",
     "location": "[resourceGroup().location]",
     "tags": {
-        "hzr": "v1"
+        "hzr": "[parameters('hzrTagValue')]"
       },    
     "properties": {
       "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
@@ -215,7 +221,7 @@
     "name": "[variables('virtualNetworkName')]",
     "location": "[resourceGroup().location]",
     "tags": {
-        "hzr": "v1"
+        "hzr": "[parameters('hzrTagValue')]"
       },    
     "properties": {
       "addressSpace": {
@@ -240,7 +246,7 @@
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
     ],
     "tags": {
-        "hzr": "v1"
+        "hzr": "[parameters('hzrTagValue')]"
       },    
     "properties": {
       "ipConfigurations": [{
@@ -265,7 +271,7 @@
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
     ],
     "tags": {
-        "hzr": "v1"
+        "hzr": "[parameters('hzrTagValue')]"
       },    
     "properties": {
       "ipConfigurations": [{
@@ -292,11 +298,9 @@
       "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), '0')]"
     ],
     "tags": {
-      "[parameters('clusterName')]": "[parameters('clusterPort')]"
+      "[parameters('clusterName')]": "[parameters('clusterPort')]",
+      "hzr": "[parameters('hzrTagValue')]"
     },
-    "tags": {
-        "hzr": "v1"
-      },    
     "properties": {
       "hardwareProfile": {
         "vmSize": "[parameters('vmSize')]"
@@ -337,7 +341,7 @@
     ],
     "tags": {
       "[parameters('clusterName')]": "[parameters('clusterPort')]",
-      "hzr":"v1"
+      "hzr":"[parameters('hzrTagValue')]"
     },
     "properties": {
       "hardwareProfile": {
@@ -380,7 +384,7 @@
       "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), '0')]"
     ],
     "tags": {
-        "hzr": "v1"
+        "hzr": "[parameters('hzrTagValue')]"
       },    
     "properties": {
       "publisher": "Microsoft.Azure.Extensions",
@@ -402,7 +406,7 @@
       "createVms"
     ],
     "tags": {
-        "hzr": "v1"
+        "hzr": "[parameters('hzrTagValue')]"
       },    
     "properties": {
       "publisher": "Microsoft.Azure.Extensions",
