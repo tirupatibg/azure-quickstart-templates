@@ -1,0 +1,622 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "type": "String",
+            "metadata": {
+                "description": "Username for hazelcast VMs"
+            }
+        },
+        "adminPassword": {
+            "type": "String",
+            "metadata": {
+                "description": "Password for hazelcast VMs, if authenticationType is set to 'password'"
+            }
+        },
+        "sshPublicKey": {
+            "type": "String",
+            "metadata": {
+                "description": "SSH Public key for hazelcast VMs, if authenticationType is set to 'sshPublicKey'"
+            }
+        },
+        "authenticationType": {
+            "allowedValues": [
+                "password",
+                "sshPublicKey"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "Authenitcation method for logging into Hazelcast VMs."
+            }
+        },
+        "clusterUserName": {
+            "defaultValue": "[parameters('adminUsername')]",
+            "type": "String",
+            "metadata": {
+                "description": "Username for hazelcast grid"
+            }
+        },
+        "clusterPassword": {
+            "type": "String",
+            "metadata": {
+                "description": "Password for hazelcast grid"
+            }
+        },
+        "dnsPrefix": {
+            "type": "String",
+            "metadata": {
+                "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+            }
+        },
+        "instanceCount": {
+            "type": "Int",
+            "metadata": {
+                "description": "The number of hazelcast nodes in the grid"
+            }
+        },
+        "clusterName": {
+            "type": "String",
+            "metadata": {
+                "description": "The tag used to identify this cluster"
+            }
+        },
+        "clusterPort": {
+            "type": "String",
+            "metadata": {
+                "description": "The cluster port to identify this cluster"
+            }
+        },
+        "minHeapSizeInGB": {
+            "type": "String",
+            "metadata": {
+                "description": "The minimum heap size for each hazelcast jvm. Applicable values should end in 'G' - 4G, 8G etc."
+            }
+        },
+        "maxHeapSizeInGB": {
+            "type": "String",
+            "metadata": {
+                "description": "The maximum heap size for each hazelcast jvm. Applicable values should end in 'G' - 4G, 8G etc."
+            }
+        },
+        "aadClientId": {
+            "type": "String",
+            "metadata": {
+                "description": "Azure Active Directory Service Principal client ID"
+            }
+        },
+        "aadClientSecret": {
+            "type": "String",
+            "metadata": {
+                "description": "Azure Active Directory Service Principal client secret"
+            }
+        },
+        "aadTenantId": {
+            "type": "String",
+            "metadata": {
+                "description": "Azure Active Directory Service Principal tenant ID"
+            }
+        },
+        "hzrTagValue": {
+            "type": "String",
+            "metadata": {
+                "description": "Tag value to be used for hzr key"
+            }
+        },
+        "vmSize": {
+            "allowedValues": [
+                "Standard_NC6",
+                "Standard_NC12",
+                "Standard_NC24",
+                "Standard_NC24r",
+                "Standard_F2s_v2",
+                "Standard_F4s_v2",
+                "Standard_F8s_v2",
+                "Standard_F16s_v2",
+                "Standard_F32s_v2",
+                "Standard_F64s_v2",
+                "Standard_F72s_v2",
+                "Standard_G1",
+                "Standard_G2",
+                "Standard_G3",
+                "Standard_G4",
+                "Standard_G5",
+                "Standard_GS1",
+                "Standard_GS2",
+                "Standard_GS3",
+                "Standard_GS4",
+                "Standard_GS4-4",
+                "Standard_GS4-8",
+                "Standard_GS5",
+                "Standard_GS5-8",
+                "Standard_GS5-16",
+                "Standard_L4s",
+                "Standard_L8s",
+                "Standard_L16s",
+                "Standard_L32s",
+                "Standard_DS1_v2",
+                "Standard_DS2_v2",
+                "Standard_DS3_v2",
+                "Standard_DS4_v2",
+                "Standard_DS5_v2",
+                "Standard_DS11-1_v2",
+                "Standard_DS11_v2",
+                "Standard_DS12-1_v2",
+                "Standard_DS12-2_v2",
+                "Standard_DS12_v2",
+                "Standard_DS13-2_v2",
+                "Standard_DS13-4_v2",
+                "Standard_DS13_v2",
+                "Standard_DS14-4_v2",
+                "Standard_DS14-8_v2",
+                "Standard_DS14_v2",
+                "Standard_DS15_v2",
+                "Standard_DS2_v2_Promo",
+                "Standard_DS3_v2_Promo",
+                "Standard_DS4_v2_Promo",
+                "Standard_DS5_v2_Promo",
+                "Standard_DS11_v2_Promo",
+                "Standard_DS12_v2_Promo",
+                "Standard_DS13_v2_Promo",
+                "Standard_DS14_v2_Promo",
+                "Standard_F1s",
+                "Standard_F2s",
+                "Standard_F4s",
+                "Standard_F8s",
+                "Standard_F16s",
+                "Standard_NV6",
+                "Standard_NV12",
+                "Standard_NV24",
+                "Standard_A0",
+                "Standard_A1",
+                "Standard_A2",
+                "Standard_A3",
+                "Standard_A5",
+                "Standard_A4",
+                "Standard_A6",
+                "Standard_A7",
+                "Basic_A0",
+                "Basic_A1",
+                "Basic_A2",
+                "Basic_A3",
+                "Basic_A4",
+                "Standard_D1_v2",
+                "Standard_D2_v2",
+                "Standard_D3_v2",
+                "Standard_D4_v2",
+                "Standard_D5_v2",
+                "Standard_D11_v2",
+                "Standard_D12_v2",
+                "Standard_D13_v2",
+                "Standard_D14_v2",
+                "Standard_D15_v2",
+                "Standard_D2_v2_Promo",
+                "Standard_D3_v2_Promo",
+                "Standard_D4_v2_Promo",
+                "Standard_D5_v2_Promo",
+                "Standard_D11_v2_Promo",
+                "Standard_D12_v2_Promo",
+                "Standard_D13_v2_Promo",
+                "Standard_D14_v2_Promo",
+                "Standard_F1",
+                "Standard_F2",
+                "Standard_F4",
+                "Standard_F8",
+                "Standard_F16",
+                "Standard_A1_v2",
+                "Standard_A2m_v2",
+                "Standard_A2_v2",
+                "Standard_A4m_v2",
+                "Standard_A4_v2",
+                "Standard_A8m_v2",
+                "Standard_A8_v2",
+                "Standard_M8-2ms",
+                "Standard_M8-4ms",
+                "Standard_M16-4ms",
+                "Standard_M16-8ms",
+                "Standard_M32-8ms",
+                "Standard_M32-16ms",
+                "Standard_M32ls",
+                "Standard_M32ms",
+                "Standard_M32ts",
+                "Standard_M64-16ms",
+                "Standard_M64-32ms",
+                "Standard_M64ls",
+                "Standard_M64ms",
+                "Standard_M64s",
+                "Standard_M128-32ms",
+                "Standard_M128-64ms",
+                "Standard_M128ms",
+                "Standard_M128s",
+                "Standard_M64",
+                "Standard_M64m",
+                "Standard_M128",
+                "Standard_M128m",
+                "Standard_D1",
+                "Standard_D2",
+                "Standard_D3",
+                "Standard_D4",
+                "Standard_D11",
+                "Standard_D12",
+                "Standard_D13",
+                "Standard_D14",
+                "Standard_B1ms",
+                "Standard_B1s",
+                "Standard_B2ms",
+                "Standard_B2s",
+                "Standard_B4ms",
+                "Standard_B8ms",
+                "Standard_D2_v3",
+                "Standard_D4_v3",
+                "Standard_D8_v3",
+                "Standard_D16_v3",
+                "Standard_D32_v3",
+                "Standard_D64_v3",
+                "Standard_D2s_v3",
+                "Standard_D4s_v3",
+                "Standard_D8s_v3",
+                "Standard_D16s_v3",
+                "Standard_D32s_v3",
+                "Standard_D64s_v3",
+                "Standard_E2_v3",
+                "Standard_E4_v3",
+                "Standard_E8_v3",
+                "Standard_E16_v3",
+                "Standard_E32_v3",
+                "Standard_E64i_v3",
+                "Standard_E64_v3",
+                "Standard_E2s_v3",
+                "Standard_E4-2s_v3",
+                "Standard_E4s_v3",
+                "Standard_E8-2s_v3",
+                "Standard_E8-4s_v3",
+                "Standard_E8s_v3",
+                "Standard_E16-4s_v3",
+                "Standard_E16-8s_v3",
+                "Standard_E16s_v3",
+                "Standard_E32-8s_v3",
+                "Standard_E32-16s_v3",
+                "Standard_E32s_v3",
+                "Standard_E64-16s_v3",
+                "Standard_E64-32s_v3",
+                "Standard_E64is_v3",
+                "Standard_E64s_v3",
+                "Standard_DS1",
+                "Standard_DS2",
+                "Standard_DS3",
+                "Standard_DS4",
+                "Standard_DS11",
+                "Standard_DS12",
+                "Standard_DS13",
+                "Standard_DS14",
+                "Standard_E20_v3",
+                "Standard_E20s_v3"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "The size of each instance VM"
+            }
+        },
+        "ubuntuOSVersion": {
+          "type": "string",
+          "defaultValue": "16.04.0-LTS",
+          "metadata": {
+            "description": "The Ubuntu version for deploying the Docker containers. This will pick a fully patched image of this given Ubuntu version. Allowed values: 14.04.2-LTS, 14.04-DAILY, 15.04"
+          },
+          "allowedValues": [
+            "14.04.2-LTS",
+            "14.04-DAILY",
+            "15.10",
+            "16.04.0-LTS"
+          ]
+        },
+        "templateBaseUrl": {
+            "defaultValue": "https://raw.githubusercontent.com/kormillivijay/azure-quickstart-templates/master/hazelcast-vm-cluster/",
+            "type": "String",
+            "metadata": {
+                "description": "The base URL for the bootstrap files"
+            }
+        }
+    },
+    "variables": {
+        "imagePublisher": "Canonical",
+        "newStorageAccountName": "[concat(parameters('clusterName'), 'hazelcast')]",
+        "imageOffer": "UbuntuServer",
+        "OSDiskName": "[concat(parameters('clusterName'), 'hazelcastosdisk')]",
+        "nicName": "[concat(parameters('clusterName'), 'myVMNic')]",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetName": "[concat(parameters('clusterName'), 'Subnet')]",
+        "subnetPrefix": "10.0.1.0/24",
+        "storageAccountType": "Standard_LRS",
+        "publicIPAddressName": "[concat(parameters('clusterName'), 'hazelcast0PubIp')]",
+        "publicIPAddressType": "Dynamic",
+        "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'vhds')]",
+        "vmName": "[concat(parameters('clusterName'), 'hazelcastInstance')]",
+        "virtualNetworkName": "[concat(parameters('clusterName'), 'hazelcastVNet')]",
+        "osProfile": "[variables(concat('osProfile', parameters('authenticationType')))]",
+        "osProfilepassword": {
+            "adminPassword": "[parameters('adminPassword')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "computerName": "[variables('vmName')]"
+        },
+        "osProfilesshPublicKey": {
+            "adminUsername": "[parameters('adminUsername')]",
+            "computerName": "[variables('vmName')]",
+            "linuxConfiguration": {
+                "disablePasswordAuthentication": true,
+                "ssh": {
+                    "publicKeys": [
+                        {
+                            "keyData": "[parameters('sshPublicKey')]",
+                            "path": "/home/notused/.ssh/authorized_keys"
+                        }
+                    ]
+                }
+            }
+        },
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+        "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
+        "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+        "apiVersion": "2015-05-01-preview",
+        "bootstrapFiles": [
+            "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
+            "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
+            "[concat(parameters('templateBaseUrl'), 'hazelcast.xml')]",
+            "[concat(parameters('templateBaseUrl'), 'install_hazelcast')]",
+            "[concat(parameters('templateBaseUrl'), 'logging.properties')]",
+            "[concat(parameters('templateBaseUrl'), 'modify_configuration')]",
+            "[concat(parameters('templateBaseUrl'), 'hazelcast-azure-1.2.1.jar')]",
+            "[concat(parameters('templateBaseUrl'), 'pom.xml')]"
+        ]
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('newStorageAccountName')]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "accountType": "[variables('storageAccountType')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIPAddressName')]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('dnsPrefix')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('virtualNetworkName')]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(variables('nicName'), '0')]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(variables('nicName'), copyIndex(1))]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "createNics",
+                "count": "[sub(parameters('instanceCount'), 1)]"
+            },
+            "tags": {
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[concat(variables('vmName'), '0')]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "[parameters('clusterName')]": "[parameters('clusterPort')]",
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": "[variables('osProfile')]",
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[parameters('ubuntuOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "osdisk1",
+                        "vhd": {
+                            "uri": "[concat('http://',variables('newStorageAccountName'),'.blob.core.usgovcloudapi.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'), '0', '.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), '0'))]"
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), '0')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[concat(variables('vmName'), copyIndex(1))]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "createVms",
+                "count": "[sub(parameters('instanceCount'), 1)]"
+            },
+            "tags": {
+                "[parameters('clusterName')]": "[parameters('clusterPort')]",
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": "[variables('osProfile')]",
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[parameters('ubuntuOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "osdisk1",
+                        "vhd": {
+                            "uri": "[concat('http://',variables('newStorageAccountName'),'.blob.core.usgovcloudapi.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'), copyIndex(1), '.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyIndex(1)))]"
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex(1))]",
+                "createNics"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName'), 0, '/initHazelcast')]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": "[variables('bootstrapFiles')]",
+                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUserName'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'))]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), '0')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName'), copyIndex(1),'/initHazelcast')]",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "createExtensions",
+                "count": "[sub(parameters('instanceCount'), 1)]"
+            },
+            "tags": {
+                "hzr": "[parameters('hzrTagValue')]"
+            },
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": "[variables('bootstrapFiles')]",
+                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUserName'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'))]"
+                }
+            },
+            "dependsOn": [
+                "createVms"
+            ]
+        }
+    ]
+}
