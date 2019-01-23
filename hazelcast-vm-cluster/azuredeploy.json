@@ -133,7 +133,7 @@
     },
     "templateBaseUrl": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/kormillivijay/azure-quickstart-templates/master/hazelcast-vm-cluster/",
+      "defaultValue": "https://raw.githubusercontent.com/srinusanchula/azure-quickstart-templates/master/hazelcast-vm-cluster/",
       "metadata": {
         "description": "The base URL for the bootstrap files"
       }
