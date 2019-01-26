@@ -2,7 +2,7 @@
 MIN_HEAP_SIZE=$1
 MAX_HEAP_SIZE=$2
 sudo apt-get update -y
-sudo apt-get install default-jdk -y
+sudo apt-get install openjdk-8-jre -y
 sudo apt-get install maven -y
 
 #### minimum heap size
@@ -22,7 +22,7 @@ if [ "x$MAX_HEAP_SIZE" != "x" ]; then
   JAVA_OPTS="$JAVA_OPTS -Xms${MAX_HEAP_SIZE}"
 fi
 # persist this variable to the VM environment
-sudo sh -c 'echo "JAVA_OPTIONS=$JAVA_OPTS" >> /etc/environment'
+sudo echo "JAVA_OPTIONS=$JAVA_OPTS" >> /etc/environment
 
 # create the hazelcast home directory
 sudo mkdir /var/hazelcast
