@@ -130,7 +130,6 @@
       "computerName": "[variables('vmName')]"
     },
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-    "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
     "apiVersion": "2015-05-01-preview",
     "bootstrapFiles": [
@@ -223,9 +222,8 @@
       "createNics"
     ],
     "tags": {
-      "hzr": "[parameters('clusterName')]",
-      "clusterName": "[parameters('clusterName')]",
-      "clusterPort": "[parameters('clusterPort')]"
+      "[parameters('clusterName')]": "[parameters('clusterPort')]",
+      "hzr": "[parameters('clusterName')]"
     },
     "properties": {
       "hardwareProfile": {
