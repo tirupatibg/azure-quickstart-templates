@@ -113,17 +113,17 @@
   },
   "variables": {
     "imagePublisher": "Canonical",
-    "newStorageAccountName": "[concat(parameters('clusterName'), '-storage')]",
+    "newStorageAccountName": "[concat(parameters('clusterName'), 'Storage')]",
     "imageOffer": "UbuntuServer",
-    "OSDiskName": "[concat(parameters('clusterName'), '-disk')]",
+    "OSDiskName": "[concat(parameters('clusterName'), 'Disk')]",
     "nicName": "[parameters('clusterName')]",
     "addressPrefix": "10.0.0.0/16",
-    "subnetName": "[concat(parameters('clusterName'), '-subnet')]",
+    "subnetName": "[concat(parameters('clusterName'), 'Subnet')]",
     "subnetPrefix": "10.0.1.0/24",
     "storageAccountType": "Standard_LRS",
-    "vmStorageAccountContainerName": "[concat(parameters('clusterName'), '-vhds')]",
+    "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'VHDS')]",
     "vmName": "[parameters('clusterName')]",
-    "virtualNetworkName": "[concat(parameters('clusterName'), '-vnet')]",
+    "virtualNetworkName": "[concat(parameters('clusterName'), 'VNet')]",
     "osProfilePassword": {
       "adminPassword": "[parameters('adminPassword')]",
       "adminUsername": "[parameters('adminUsername')]",
@@ -189,7 +189,7 @@
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Network/networkInterfaces",
-    "name": "[concat(variables('nicName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic')]",
+    "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -215,11 +215,11 @@
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Compute/virtualMachines",
-    "name": "[concat(variables('vmName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-vm')]",
+    "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
-      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic')]",
+      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
       "createNics"
     ],
     "tags": {
@@ -249,7 +249,7 @@
       },
       "networkProfile": {
         "networkInterfaces": [{
-          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic'))]"
+          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name))]"
         }]
       }
     },
@@ -259,7 +259,7 @@
     }
   }, {
     "type": "Microsoft.Compute/virtualMachines/extensions",
-    "name": "[concat(variables('vmName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-vm', '/initHazelcast')]",
+    "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '/initHazelcast')]",
     "apiVersion": "[variables('apiVersion')]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
