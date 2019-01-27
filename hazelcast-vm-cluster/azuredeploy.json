@@ -186,13 +186,15 @@
       "[concat(parameters('templateBaseUrl'), 'modify_configuration')]",
       "[concat(parameters('templateBaseUrl'), 'pom.xml')]"
     ],
-    "copy": {
-      "name": "uniqueNames,
-      "count": "[parameters('instanceCount')]",
-      "input": {
-        "name" : "[uniqueString(resourceGroup().id))]"
+    "copy": [
+      {
+        "name": "uniqueNames",
+        "count": "[parameters('instanceCount')]",
+        "input": {
+          "name": "[uniqueString(resourceGroup().id))]"
+        }
       }
-    }
+     ]
   },
   "resources": [{
     "type": "Microsoft.Storage/storageAccounts",
