@@ -14,22 +14,6 @@
         "description": "Password for hazelcast VMs, if authenticationType is set to 'password'"
       }
     },
-    "sshPublicKey": {
-      "type": "string",
-      "metadata": {
-        "description": "SSH Public key for hazelcast VMs, if authenticationType is set to 'sshPublicKey'"
-      }
-    },
-    "authenticationType": {
-      "type": "string",
-      "metadata": {
-        "description": "Authenitcation method for logging into Hazelcast VMs."
-      },
-      "allowedValues": [
-        "password",
-        "sshPublicKey"
-      ]
-    },
     "clusterUserName": {
       "type": "string",
       "metadata": {
@@ -41,12 +25,6 @@
       "type": "string",
       "metadata": {
         "description": "Password for hazelcast grid"
-      }
-    },
-    "dnsPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
       }
     },
     "instanceCount": {
@@ -97,12 +75,6 @@
         "description": "Azure Active Directory Service Principal tenant ID"
       }
     },
-    "hzrTagValue": {
-      "type": "string",
-      "metadata": {
-        "description": "Tag value to be used for hzr key"
-      }
-    },
     "vmSize": {
       "type": "string",
       "metadata": {
@@ -141,37 +113,21 @@
   },
   "variables": {
     "imagePublisher": "Canonical",
-    "newStorageAccountName": "[concat(parameters('clusterName'), 'hzstorage')]",
+    "newStorageAccountName": "[concat(parameters('clusterName'), '-storage')]",
     "imageOffer": "UbuntuServer",
-    "OSDiskName": "[concat(parameters('clusterName'), 'hzdisk')]",
-    "nicName": "[concat(parameters('clusterName'), 'hznic')]",
+    "OSDiskName": "[concat(parameters('clusterName'), '-disk')]",
+    "nicName": "[parameters('clusterName')]",
     "addressPrefix": "10.0.0.0/16",
-    "subnetName": "[concat(parameters('clusterName'), 'hzsubnet')]",
+    "subnetName": "[concat(parameters('clusterName'), '-subnet')]",
     "subnetPrefix": "10.0.1.0/24",
     "storageAccountType": "Standard_LRS",
-    "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'hzvhds')]",
-    "vmName": "[concat(parameters('clusterName'), 'hzvm')]",
-    "virtualNetworkName": "[concat(parameters('clusterName'), 'hzvnet')]",
-    "osProfile": "[variables(concat('osProfile', parameters('authenticationType')))]",
-    "osProfilepassword": {
+    "vmStorageAccountContainerName": "[concat(parameters('clusterName'), '-vhds')]",
+    "vmName": "[parameters('clusterName')]",
+    "virtualNetworkName": "[concat(parameters('clusterName'), '-vnet')]",
+    "osProfilePassword": {
       "adminPassword": "[parameters('adminPassword')]",
       "adminUsername": "[parameters('adminUsername')]",
       "computerName": "[variables('vmName')]"
-    },
-    "osProfilesshPublicKey": {
-      "adminUsername": "[parameters('adminUsername')]",
-      "computerName": "[variables('vmName')]",
-      "linuxConfiguration": {
-        "disablePasswordAuthentication": true,
-        "ssh": {
-          "publicKeys": [
-            {
-              "keyData": "[parameters('sshPublicKey')]",
-              "path": "/home/notused/.ssh/authorized_keys"
-            }
-          ]
-        }
-      }
     },
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
@@ -204,7 +160,7 @@
     "apiVersion": "[variables('apiVersion')]",
     "location": "[resourceGroup().location]",
     "tags": {
-        "hzr": "[parameters('hzrTagValue')]"
+        "clusterName": "[parameters('clusterName')]"
       },    
      "properties": {
       "accountType": "[variables('storageAccountType')]"
@@ -215,7 +171,7 @@
     "name": "[variables('virtualNetworkName')]",
     "location": "[resourceGroup().location]",
     "tags": {
-        "hzr": "[parameters('hzrTagValue')]"
+        "clusterName": "[parameters('clusterName')]"
       },    
     "properties": {
       "addressSpace": {
@@ -233,13 +189,13 @@
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Network/networkInterfaces",
-    "name": "[concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+    "name": "[concat(variables('nicName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic')]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
     ],
     "tags": {
-        "hzr": "[parameters('hzrTagValue')]"
+        "clusterName": "[parameters('clusterName')]"
       },    
     "properties": {
       "ipConfigurations": [{
@@ -259,22 +215,22 @@
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Compute/virtualMachines",
-    "name": "[concat(variables('vmName'), copyIndex(1))]",
+    "name": "[concat(variables('vmName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-vm')]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
-      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic')]",
       "createNics"
     ],
     "tags": {
-      "[parameters('clusterName')]": "[parameters('clusterPort')]",
-      "hzr":"[parameters('hzrTagValue')]"
+      "clusterName": "[parameters('clusterName')]",
+      "clusterPort": "[parameters('clusterPort')]"
     },
     "properties": {
       "hardwareProfile": {
         "vmSize": "[parameters('vmSize')]"
       },
-      "osProfile": "[variables('osProfile')]",
+      "osProfile": "[variables('osProfilePassword')]",
       "storageProfile": {
         "imageReference": {
           "publisher": "[variables('imagePublisher')]",
@@ -293,7 +249,7 @@
       },
       "networkProfile": {
         "networkInterfaces": [{
-          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name))]"
+          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic'))]"
         }]
       }
     },
@@ -303,14 +259,14 @@
     }
   }, {
     "type": "Microsoft.Compute/virtualMachines/extensions",
-    "name": "[concat(variables('vmName'), copyIndex(1),'/initHazelcast')]",
+    "name": "[concat(variables('vmName'), '-', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-vm', '/initHazelcast')]",
     "apiVersion": "[variables('apiVersion')]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "createVms"
     ],
     "tags": {
-        "hzr": "[parameters('hzrTagValue')]"
+        "clusterName": "[parameters('clusterName')]"
       },    
     "properties": {
       "publisher": "Microsoft.Azure.Extensions",
