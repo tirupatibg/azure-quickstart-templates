@@ -192,7 +192,7 @@
           "name": "uniqueArray",
           "count": "[parameters('instanceCount')]",
           "input": {
-            "name": "[concat(uniqueString(resourceGroup().id), copyIndex())]"
+            "name": "[concat(uniqueString(resourceGroup().id), copyIndex('uniqueArray'))]"
           }
         }
       ]
