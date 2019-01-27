@@ -160,7 +160,7 @@
     "apiVersion": "[variables('apiVersion')]",
     "location": "[resourceGroup().location]",
     "tags": {
-        "clusterName": "[parameters('clusterName')]"
+        "hzr": "[parameters('clusterName')]"
       },    
      "properties": {
       "accountType": "[variables('storageAccountType')]"
@@ -171,7 +171,7 @@
     "name": "[variables('virtualNetworkName')]",
     "location": "[resourceGroup().location]",
     "tags": {
-        "clusterName": "[parameters('clusterName')]"
+        "hzr": "[parameters('clusterName')]"
       },    
     "properties": {
       "addressSpace": {
@@ -195,7 +195,7 @@
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
     ],
     "tags": {
-        "clusterName": "[parameters('clusterName')]"
+        "hzr": "[parameters('clusterName')]"
       },    
     "properties": {
       "ipConfigurations": [{
@@ -223,6 +223,7 @@
       "createNics"
     ],
     "tags": {
+      "hzr": "[parameters('clusterName')]",
       "clusterName": "[parameters('clusterName')]",
       "clusterPort": "[parameters('clusterPort')]"
     },
@@ -266,7 +267,7 @@
       "createVms"
     ],
     "tags": {
-        "clusterName": "[parameters('clusterName')]"
+        "hzr": "[parameters('clusterName')]"
       },    
     "properties": {
       "publisher": "Microsoft.Azure.Extensions",
