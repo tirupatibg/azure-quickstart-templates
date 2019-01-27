@@ -27,6 +27,5 @@ sudo echo "JAVA_OPTIONS=$JAVA_OPTS" >> /etc/environment
 # create the hazelcast home directory
 sudo mkdir /var/hazelcast
 sudo cp pom.xml /var/hazelcast
-sudo mvn install:install-file -Dfile=hazelcast-azure-1.2.1.jar -DgroupId=com.hazelcast.azure -DartifactId=hazelcast-azure -Dversion=1.2.1 -Dpackaging=jar
 sudo mvn install
 sudo cp ./hazelcast.xml /var/hazelcast/
