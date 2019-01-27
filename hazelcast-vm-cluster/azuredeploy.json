@@ -191,7 +191,7 @@
         "name": "uniqueNames",
         "count": "[parameters('instanceCount')]",
         "input": {
-          "name": "[uniqueString(resourceGroup().id))]"
+          "name": "[uniqueString(resourceGroup().id)]"
         }
       }
      ]
