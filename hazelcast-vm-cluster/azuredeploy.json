@@ -222,7 +222,7 @@
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Network/networkInterfaces",
-    "name": "[concat(variables('nicName'), copyIndex())]",
+    "name": "[concat(variables('nicName'), copyIndex(1))]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -243,16 +243,16 @@
     },
     "copy": {
       "name": "createNics",
-      "count": "[sub(parameters('instanceCount'), 1)]"
+      "count": "[parameters('instanceCount')]"
     }
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Compute/virtualMachines",
-    "name": "[concat(variables('vmName'), copyIndex())]",
+    "name": "[concat(variables('vmName'), copyIndex(1))]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
-      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
+      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex(1))]",
       "createNics"
     ],
     "tags": {
@@ -274,7 +274,7 @@
         "osDisk": {
           "name": "osdisk1",
           "vhd": {
-            "uri": "[concat('http://',variables('newStorageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'), copyIndex(), '.vhd')]"
+            "uri": "[concat('http://',variables('newStorageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'), copyIndex(1), '.vhd')]"
           },
           "caching": "ReadWrite",
           "createOption": "FromImage"
@@ -282,17 +282,17 @@
       },
       "networkProfile": {
         "networkInterfaces": [{
-          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyIndex()))]"
+          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyIndex(1)))]"
         }]
       }
     },
     "copy": {
       "name": "createVms",
-      "count": "[sub(parameters('instanceCount'), 1)]"
+      "count": "[parameters('instanceCount')]"
     }
   }, {
     "type": "Microsoft.Compute/virtualMachines/extensions",
-    "name": "[concat(variables('vmName'), copyIndex(),'/initHazelcast')]",
+    "name": "[concat(variables('vmName'), copyIndex(1),'/initHazelcast')]",
     "apiVersion": "[variables('apiVersion')]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
@@ -313,7 +313,7 @@
     },
     "copy": {
       "name": "createExtensions",
-      "count": "[sub(parameters('instanceCount'), 1)]"
+      "count": "[parameters('instanceCount')]"
     }
   }
 ]}
