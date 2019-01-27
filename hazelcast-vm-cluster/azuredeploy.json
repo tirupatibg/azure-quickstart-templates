@@ -185,7 +185,14 @@
       "[concat(parameters('templateBaseUrl'), 'logging.properties')]",
       "[concat(parameters('templateBaseUrl'), 'modify_configuration')]",
       "[concat(parameters('templateBaseUrl'), 'pom.xml')]"
-    ]
+    ],
+    "copy": {
+      "name": "uniqueNames,
+      "count": "[parameters('instanceCount')]",
+      "input": {
+        "name" : "[uniqueString(resourceGroup().id))]"
+      }
+    }
   },
   "resources": [{
     "type": "Microsoft.Storage/storageAccounts",
@@ -222,7 +229,7 @@
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Network/networkInterfaces",
-    "name": "[concat(variables('nicName'), copyIndex(1))]",
+    "name": "[concat(variables('nicName'), variables('uniqueNames')[copyIndex(0)].name)]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -252,7 +259,7 @@
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
-      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex(1))]",
+      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), variables('uniqueNames')[copyIndex(0)].name)]",
       "createNics"
     ],
     "tags": {
@@ -282,7 +289,7 @@
       },
       "networkProfile": {
         "networkInterfaces": [{
-          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyIndex(1)))]"
+          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), variables('uniqueNames')[copyIndex(0)].name))]"
         }]
       }
     },
