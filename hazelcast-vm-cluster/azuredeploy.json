@@ -233,7 +233,7 @@
   }, {
     "apiVersion": "[variables('apiVersion')]",
     "type": "Microsoft.Network/networkInterfaces",
-    "name": "[concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+    "name": "[concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex()].name)]",
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -263,7 +263,7 @@
     "location": "[resourceGroup().location]",
     "dependsOn": [
       "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
-      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+      "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex()].name)]",
       "createNics"
     ],
     "tags": {
@@ -293,7 +293,7 @@
       },
       "networkProfile": {
         "networkInterfaces": [{
-          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name))]"
+          "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex()].name))]"
         }]
       }
     },
