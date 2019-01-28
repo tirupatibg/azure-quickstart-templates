@@ -39,7 +39,7 @@
         },
         "clusterName": {
             "type": "string",
-            "defaultValue": "HazelcastCluster",
+            "defaultValue": "hzcluster",
             "metadata": {
                 "description": "The tag used to identify this cluster"
             }
