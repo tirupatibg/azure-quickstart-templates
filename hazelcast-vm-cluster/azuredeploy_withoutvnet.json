@@ -204,6 +204,9 @@
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
             "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[variables('subnetRef')]"
+            ],
             "tags": {
                 "hzr": "[parameters('clusterName')]"
             },
