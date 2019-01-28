@@ -183,9 +183,6 @@
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "name": "[concat(parameters('existingVNetName'), '/', variables('subnetName'))]",
             "location": "[resourceGroup().location]",
-            "tags": {
-                "hzr": "[parameters('clusterName')]"
-            },
             "properties": {
               "addressPrefix": "[parameters('subnetRange')]"
             }
