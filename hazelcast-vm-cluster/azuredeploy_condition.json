@@ -119,6 +119,12 @@
       "metadata": {
         "description": "The base URL for the bootstrap files"
       }
+    },
+    "randomString": {
+      "type": "string",
+      "metadata": {
+         "description": "To resolve resource name conflicts"
+      }
     }
   },
   "variables": {
@@ -157,7 +163,7 @@
           "name": "uniqueArray",
           "count": "[parameters('instanceCount')]",
           "input": {
-            "name": "[concat(uniqueString(resourceGroup().id, deployment().name), copyIndex('uniqueArray', 1))]"
+            "name": "[parameters('randomString'), concat(uniqueString(resourceGroup().id, deployment().name), copyIndex('uniqueArray', 1))]"
           }
         }
       ]
