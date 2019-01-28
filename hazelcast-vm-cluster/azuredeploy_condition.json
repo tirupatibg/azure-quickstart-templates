@@ -163,7 +163,7 @@
           "name": "uniqueArray",
           "count": "[parameters('instanceCount')]",
           "input": {
-            "name": "[parameters('randomString'), concat(uniqueString(resourceGroup().id, deployment().name), copyIndex('uniqueArray', 1))]"
+            "name": "[concat(uniqueString(resourceGroup().id, deployment().name, parameters('randomString')), copyIndex('uniqueArray', 1))]"
           }
         }
       ]
