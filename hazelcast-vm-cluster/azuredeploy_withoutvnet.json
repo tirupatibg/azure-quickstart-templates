@@ -32,7 +32,7 @@
         },
         "instanceCount": {
             "type": "int",
-            "defaultValue": "2",
+            "defaultValue": 2,
             "metadata": {
                 "description": "The number of hazelcast nodes in the grid"
             }
@@ -53,14 +53,14 @@
         },
         "minHeapSizeInGB": {
             "type": "string",
-            "defaultValue": "1",
+            "defaultValue": "1G",
             "metadata": {
                 "description": "The minimum heap size for each hazelcast jvm. Applicable values should end in 'G' - 4G, 8G etc."
             }
         },
         "maxHeapSizeInGB": {
             "type": "string",
-            "defaultValue": "2",
+            "defaultValue": "2G",
             "metadata": {
                 "description": "The maximum heap size for each hazelcast jvm. Applicable values should end in 'G' - 4G, 8G etc."
             }
@@ -207,9 +207,6 @@
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/subnets/', parameters('existingVNetName'), '/', variables('subnetName'))]"
-            ],
             "tags": {
                 "hzr": "[parameters('clusterName')]"
             },
@@ -232,7 +229,7 @@
             }
         },
         {
-            "apiVersion": "2018-08-01",
+            "apiVersion": "2017-03-30",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
             "location": "[resourceGroup().location]",
@@ -280,7 +277,7 @@
             }
         },
         {
-            "apiVersion": "2018-08-01",
+            "apiVersion": "2018-06-01",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '/initHazelcast')]",
             "location": "[resourceGroup().location]",
