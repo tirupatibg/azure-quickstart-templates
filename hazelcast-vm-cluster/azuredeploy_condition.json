@@ -123,7 +123,7 @@
     "randomString": {
       "type": "string",
       "metadata": {
-         "description": "To resolve resource name conflicts"
+         "description": "To resolve resource name conflicts with hash."
       }
     }
   },
