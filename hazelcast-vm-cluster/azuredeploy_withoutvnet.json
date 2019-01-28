@@ -114,7 +114,7 @@
         },
         "existingVNetName": {
             "type": "string",
-            "defaultValue": "HazelcastVNet",
+            "defaultValue": "hzvnet",
             "metadata": {
                 "description": "Vent name for hazelcast resources"
             }
