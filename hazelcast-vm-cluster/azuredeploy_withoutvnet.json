@@ -154,7 +154,7 @@
             "adminUsername": "[parameters('adminUsername')]",
             "computerName": "[variables('vmName')]"
         },
-        "vNetRef": "[[resourceId('Microsoft.Network/virtualNetworks', parameters('existingVNetName'))]]",
+        "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingVNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', variables('subnetName'))]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
