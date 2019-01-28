@@ -188,7 +188,7 @@
             }
         },
         {
-            "apiVersion": "2018-08-01",
+            "apiVersion": "2018-07-01",
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
             "location": "[resourceGroup().location]",
@@ -200,7 +200,7 @@
             }
         },
         {
-            "apiVersion": "2018-08-01",
+            "apiVersion": "2017-06-01",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
             "location": "[resourceGroup().location]",
