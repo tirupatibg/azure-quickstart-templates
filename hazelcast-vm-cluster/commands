@@ -1,0 +1,14 @@
+ARM Template execution in browser -
+https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsrinusanchula%2Fazure-quickstart-templates%2Fmaster%2Fhazelcast-vm-cluster%2Fazuredeploy.json
+
+Azure CLI -
+az group create --name hzss --location "West US"
+az group deployment create \
+  --name HazelcastDeployment \
+  --resource-group hzss \
+  --template-uri https://raw.githubusercontent.com/srinusanchula/azure-quickstart-templates/master/hazelcast-vm-cluster/azuredeploy.json \
+  --parameters aadClientId=? \
+  --parameters aadClientSecret=? \
+  --parameters aadTenantId=? \
+  --parameters vNetNewOrExisting=new/existing \
+  --parameters randomString=abcdefgh

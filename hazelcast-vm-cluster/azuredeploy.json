@@ -151,6 +151,13 @@
                 "description": "Subnet address for hazelcast resources ex: 10.0.250.0/24, CIDR notation."
             }
         },
+        "hazelcastVersion": {
+            "type": "string",
+            "defaultValue": "3.7.2",
+            "metadata": {
+                "description": "Hazelcast version."
+            }
+        },
         "templateBaseUrl": {
             "type": "string",
             "defaultValue": "https://raw.githubusercontent.com/srinusanchula/azure-quickstart-templates/master/hazelcast-vm-cluster/",
@@ -339,7 +346,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": "[variables('bootstrapFiles')]",
-                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUserName'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'))]"
+                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUserName'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'), parameters('hazelcastVersion)]"
                 }
             },
             "copy": {
