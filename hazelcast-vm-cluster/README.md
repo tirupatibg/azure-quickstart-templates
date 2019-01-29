@@ -1,7 +1,6 @@
 # Deploy a Hazelcast Cluster
 
-[![Deploy HZ to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsrinusanchula%2Fazure-quickstart-templates%2Fmaster%2Fhazelcast-vm-cluster%2Fazuredeploy_hazelcast.json)
-[![Deploy VNet to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsrinusanchula%2Fazure-quickstart-templates%2Fmaster%2Fhazelcast-vm-cluster%2Fazuredeploy_vnet.json)
+[![Deploy HZ to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsrinusanchula%2Fazure-quickstart-templates%2Fmaster%2Fhazelcast-vm-cluster%2Fazuredeploy.json)
 
 [Hazelcast](https://hazelcast.com) is an in-memory data platform which can support a variety of data applications such as data grids, nosql data stores, caching and web session clustering.
 
