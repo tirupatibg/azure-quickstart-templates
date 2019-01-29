@@ -112,17 +112,32 @@
                 "16.04.0-LTS"
             ]
         },
-        "existingVNetName": {
+        "vNetName": {
             "type": "string",
+            "defaultValue": "[concat(parameters('clusterName'), 'VNet')]",
             "metadata": {
-                "description": "Vent name for hazelcast resources"
+                "description": "VNet name for hazelcast resources. It will be created if not exsits."
             }
         },
-        "subnetRange": {
+        "vNetAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.0.0.0/16",
+            "metadata": {
+                "description": "VNet address prefix, CIDR notation."
+            }
+        },
+        "subnetName": {
+            "type": "string",
+            "defaultValue": "[concat(parameters('clusterName'), 'Subnet')]",
+            "metadata": {
+                "description": "VNet name for hazelcast resources. It will be created if not exsits."
+            }
+        },
+        "subnetAddressPrefix": {
             "type": "string",
             "defaultValue": "10.0.250.0/24",
             "metadata": {
-                "description": "Subnet range CIDR notation for hazelcast resources ex: 10.0.250.0/24"
+                "description": "Subnet address for hazelcast resources ex: 10.0.250.0/24, CIDR notation."
             }
         },
         "templateBaseUrl": {
@@ -145,7 +160,6 @@
         "storageAccountName": "[concat(parameters('clusterName'), 'storage')]",
         "storageAccountType": "Standard_LRS",
         "nicName": "[parameters('clusterName')]",
-        "subnetName": "[concat(parameters('clusterName'), 'subnet')]",
         "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'vhds')]",
         "vmName": "[parameters('clusterName')]",
         "osProfilePassword": {
@@ -153,8 +167,7 @@
             "adminUsername": "[parameters('adminUsername')]",
             "computerName": "[variables('vmName')]"
         },
-        "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingVNetName'))]",
-        "subnetRef": "[concat(variables('vNetRef'), '/subnets/', variables('subnetName'))]",
+        "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
@@ -179,11 +192,23 @@
     "resources": [
         {
             "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "name": "[concat(parameters('existingVNetName'), '/', variables('subnetName'))]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vNetName')]",
             "location": "[resourceGroup().location]",
             "properties": {
-                "addressPrefix": "[parameters('subnetRange')]"
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('vNetAddressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetAddressPrefix')]"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -204,7 +229,7 @@
             "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[variables('subnetRef')]"
+                "[variables('vNetRef')]"
             ],
             "tags": {
                 "hzr": "[parameters('clusterName')]"
