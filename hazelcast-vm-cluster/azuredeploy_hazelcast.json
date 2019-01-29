@@ -168,7 +168,7 @@
             "computerName": "[variables('vmName')]"
         },
         "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
-        "subnetRef": "[concat(variables('vNetRef'), '/subnets/', variables('subnetName'))]",
+        "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
