@@ -168,6 +168,7 @@
             "computerName": "[variables('vmName')]"
         },
         "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
+        "subnetRef": "[concat(variables('vNetRef'), '/subnets/', variables('subnetName'))]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
@@ -191,7 +192,7 @@
     },
     "resources": [
         {
-            "apiVersion": "2015-05-01-preview",
+            "apiVersion": "2017-06-01",
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('vNetName')]",
             "location": "[resourceGroup().location]",
@@ -200,15 +201,19 @@
                     "addressPrefixes": [
                         "[parameters('vNetAddressPrefix')]"
                     ]
-                },
-                "subnets": [
-                    {
-                        "name": "[parameters('subnetName')]",
-                        "properties": {
-                            "addressPrefix": "[parameters('subnetAddressPrefix')]"
-                        }
-                    }
-                ]
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('vNetName'), '/', variables('subnetName'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[variables('vNetRef')]"
+            ],
+            "properties": {
+                "addressPrefix": "[parameters('subnetAddressPrefix')]"
             }
         },
         {
@@ -216,6 +221,9 @@
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
             "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[variables('subnetRef')]"
+            ],
             "tags": {
                 "hzr": "[parameters('clusterName')]"
             },
@@ -229,7 +237,7 @@
             "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[variables('vNetRef')]"
+                "[variables('subnetRef')]"
             ],
             "tags": {
                 "hzr": "[parameters('clusterName')]"
