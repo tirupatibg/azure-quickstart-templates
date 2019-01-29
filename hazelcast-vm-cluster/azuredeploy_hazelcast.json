@@ -128,9 +128,9 @@
         },
         "subnetName": {
             "type": "string",
-            "defaultValue": "[concat(parameters('clusterName'), 'subnet')]",
+            "defaultValue": "hzclustersubnet",
             "metadata": {
-                "description": "VNet name for hazelcast resources. It will be created if not exsits."
+                "description": "Subnet name for hazelcast resources. It will be created if not exsits."
             }
         },
         "subnetAddressPrefix": {
