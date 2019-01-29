@@ -192,26 +192,11 @@
     },
     "resources": [
         {
-            "apiVersion": "2017-06-01",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('vNetName')]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[parameters('vNetAddressPrefix')]"
-                    ]
-                }
-            }
-        },
-        {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "name": "[concat(parameters('vNetName'), '/', parameters('subnetName'))]",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[variables('vNetRef')]"
-            ],
+            "dependsOn": [],
             "properties": {
                 "addressPrefix": "[parameters('subnetAddressPrefix')]"
             }
