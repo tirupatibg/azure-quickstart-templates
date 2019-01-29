@@ -114,7 +114,7 @@
         },
         "vNetName": {
             "type": "string",
-            "defaultValue": "[concat(parameters('clusterName'), 'VNet')]",
+            "defaultValue": "hzclusterVNet",
             "metadata": {
                 "description": "VNet name for hazelcast resources. It will be created if not exsits."
             }
