@@ -1,0 +1,305 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "dev",
+            "metadata": {
+                "description": "Username for hazelcast VMs"
+            }
+        },
+        "adminPassword": {
+            "type": "string",
+            "defaultValue": "Citrix123456",
+            "metadata": {
+                "description": "Password for hazelcast VMs, if authenticationType is set to 'password'"
+            }
+        },
+        "clusterUserName": {
+            "type": "string",
+            "defaultValue": "[parameters('adminUsername')]",
+            "metadata": {
+                "description": "Username for hazelcast grid"
+            }
+        },
+        "clusterPassword": {
+            "type": "string",
+            "defaultValue": "[parameters('adminPassword')]",
+            "metadata": {
+                "description": "Password for hazelcast grid"
+            }
+        },
+        "instanceCount": {
+            "type": "int",
+            "defaultValue": 2,
+            "metadata": {
+                "description": "The number of hazelcast nodes in the grid"
+            }
+        },
+        "clusterName": {
+            "type": "string",
+            "defaultValue": "hzcluster",
+            "metadata": {
+                "description": "The tag used to identify this cluster"
+            }
+        },
+        "clusterPort": {
+            "type": "string",
+            "defaultValue": "5701",
+            "metadata": {
+                "description": "The cluster port to identify this cluster"
+            }
+        },
+        "minHeapSizeInGB": {
+            "type": "string",
+            "defaultValue": "1G",
+            "metadata": {
+                "description": "The minimum heap size for each hazelcast jvm. Applicable values should end in 'G' - 4G, 8G etc."
+            }
+        },
+        "maxHeapSizeInGB": {
+            "type": "string",
+            "defaultValue": "2G",
+            "metadata": {
+                "description": "The maximum heap size for each hazelcast jvm. Applicable values should end in 'G' - 4G, 8G etc."
+            }
+        },
+        "aadClientId": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Active Directory Service Principal client ID"
+            }
+        },
+        "aadClientSecret": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Active Directory Service Principal client secret"
+            }
+        },
+        "aadTenantId": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Active Directory Service Principal tenant ID"
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_DS1",
+            "metadata": {
+                "description": "The size of each instance VM"
+            },
+            "allowedValues": [
+                "Standard_DS1",
+                "Standard_DS2",
+                "Standard_DS3",
+                "Standard_DS4",
+                "Standard_DS8",
+                "Standard_DS16",
+                "Standard_D1"
+            ]
+        },
+        "ubuntuOSVersion": {
+            "type": "string",
+            "defaultValue": "16.04.0-LTS",
+            "metadata": {
+                "description": "The Ubuntu version for deploying the Docker containers. This will pick a fully patched image of this given Ubuntu version. Allowed values: 14.04.2-LTS, 14.04-DAILY, 15.04"
+            },
+            "allowedValues": [
+                "14.04.2-LTS",
+                "14.04-DAILY",
+                "15.10",
+                "16.04.0-LTS"
+            ]
+        },
+        "existingVNetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Vent name for hazelcast resources"
+            }
+        },
+        "subnetRange": {
+            "type": "string",
+            "defaultValue": "10.0.250.0/24",
+            "metadata": {
+                "description": "Subnet range CIDR notation for hazelcast resources ex: 10.0.250.0/24"
+            }
+        },
+        "templateBaseUrl": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/srinusanchula/azure-quickstart-templates/master/hazelcast-vm-cluster/",
+            "metadata": {
+                "description": "The base URL for the bootstrap files"
+            }
+        },
+        "randomString": {
+            "type": "string",
+            "metadata": {
+                "description": "To resolve resource name conflicts with hash."
+            }
+        }
+    },
+    "variables": {
+        "imagePublisher": "Canonical",
+        "imageOffer": "UbuntuServer",
+        "storageAccountName": "[concat(parameters('clusterName'), 'storage')]",
+        "storageAccountType": "Standard_LRS",
+        "nicName": "[parameters('clusterName')]",
+        "subnetName": "[concat(parameters('clusterName'), 'subnet')]",
+        "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'vhds')]",
+        "vmName": "[parameters('clusterName')]",
+        "osProfilePassword": {
+            "adminPassword": "[parameters('adminPassword')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "computerName": "[variables('vmName')]"
+        },
+        "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingVNetName'))]",
+        "subnetRef": "[concat(variables('vNetRef'), '/subnets/', variables('subnetName'))]",
+        "bootstrapFiles": [
+            "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
+            "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
+            "[concat(parameters('templateBaseUrl'), 'hazelcast.xml')]",
+            "[concat(parameters('templateBaseUrl'), 'install_hazelcast')]",
+            "[concat(parameters('templateBaseUrl'), 'logging.properties')]",
+            "[concat(parameters('templateBaseUrl'), 'modify_configuration')]",
+            "[concat(parameters('templateBaseUrl'), 'pom.xml')]"
+        ],
+        "uniqueNames": {
+            "copy": [
+                {
+                    "name": "uniqueArray",
+                    "count": "[parameters('instanceCount')]",
+                    "input": {
+                        "name": "[concat(uniqueString(resourceGroup().id, deployment().name, parameters('randomString')), copyIndex('uniqueArray', 1))]"
+                    }
+                }
+            ]
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('existingVNetName'), '/', variables('subnetName'))]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "addressPrefix": "[parameters('subnetRange')]"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "hzr": "[parameters('clusterName')]"
+            },
+            "properties": {
+                "accountType": "[variables('storageAccountType')]"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[variables('subnetRef')]"
+            ],
+            "tags": {
+                "hzr": "[parameters('clusterName')]"
+            },
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "copy": {
+                "name": "createNics",
+                "count": "[parameters('instanceCount')]"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+                "createNics"
+            ],
+            "tags": {
+                "[parameters('clusterName')]": "[parameters('clusterPort')]",
+                "hzr": "[parameters('clusterName')]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": "[variables('osProfilePassword')]",
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[parameters('ubuntuOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "osdisk1",
+                        "vhd": {
+                            "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/', variables('vmStorageAccountContainerName'), '/', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name))]"
+                        }
+                    ]
+                }
+            },
+            "copy": {
+                "name": "createVms",
+                "count": "[parameters('instanceCount')]"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '/initHazelcast')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "createVms"
+            ],
+            "tags": {
+                "hzr": "[parameters('clusterName')]"
+            },
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": "[variables('bootstrapFiles')]",
+                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUserName'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'))]"
+                }
+            },
+            "copy": {
+                "name": "createExtensions",
+                "count": "[parameters('instanceCount')]"
+            }
+        }
+    ]
+}
