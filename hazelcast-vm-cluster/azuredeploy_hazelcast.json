@@ -119,6 +119,17 @@
                 "description": "VNet name for hazelcast resource. It will be created if not exsits."
             }
         },
+        "vNetNewOrExisting": {
+            "type": "string",
+            "defaultValue": "existing",
+            "metadata": {
+                "description": "Is this a existing vNet or create new."
+            },
+            "allowedValues": [
+                "new",
+                "existing"
+            ]
+        },
         "vNetAddressPrefix": {
             "type": "string",
             "defaultValue": "10.0.0.0/16",
@@ -192,11 +203,28 @@
     },
     "resources": [
         {
+            "condition": "[equals(parameters('vNetNewOrExisting'), 'new')]",
+            "apiVersion": "2017-06-01",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vNetName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('vNetAddressPrefix')]"
+                    ]
+                }
+            }
+        },
+        {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "name": "[concat(parameters('vNetName'), '/', parameters('subnetName'))]",
             "location": "[resourceGroup().location]",
-            "dependsOn": [],
+            "dependsOn": [
+                "[variables('vNetRef')]"
+            ],
             "properties": {
                 "addressPrefix": "[parameters('subnetAddressPrefix')]"
             }
