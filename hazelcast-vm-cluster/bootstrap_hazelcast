@@ -1,6 +1,5 @@
 #! /bin/bash
 # Provided by azure extension which comes from template parameters
-
 MIN_HEAP_SIZE=$1
 MAX_HEAP_SIZE=$2
 CLUSTER_NAME=$3
