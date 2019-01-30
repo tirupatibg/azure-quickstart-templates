@@ -2,9 +2,9 @@
 Description=Hazelcast service
 
 [Service]
-Environment= MAVEN_OPTS=-server
+Environment=MAVEN_OPTS=-Xms1G -Xmx2G -server
 WorkingDirectory=/var/hazelcast
-ExecStart=/usr/bin/mvn -X exec:java
+ExecStart=/usr/bin/mvn exec:java
 Restart=always
 
 [Install]

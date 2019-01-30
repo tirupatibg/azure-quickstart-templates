@@ -11,4 +11,10 @@ az group deployment create \
   --parameters aadClientSecret=? \
   --parameters aadTenantId=? \
   --parameters vNetNewOrExisting=new/existing \
-  --parameters randomString=abcdefgh
+  --parameters randomString=?
+
+  Cleanup -
+  - vm
+  - nic
+  - blob (storage)
+  - extension

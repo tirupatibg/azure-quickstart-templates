@@ -1,5 +1,5 @@
-<hazelcast id="hazelcast-consul-discovery" 
-           xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.6.xsd"
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.7.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <group>
@@ -76,6 +76,10 @@
         <time-to-live-seconds>86400</time-to-live-seconds>
         <max-idle-seconds>86400</max-idle-seconds>
         <eviction-policy>LRU</eviction-policy>
+    </map>
+    <map name="demo">
+        <in-memory-format>BINARY</in-memory-format>
+        <backup-count>1</backup-count>
     </map>
     <map name="default">
         <!--
