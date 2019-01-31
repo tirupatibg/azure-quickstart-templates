@@ -11,7 +11,7 @@
         },
         "adminPassword": {
             "type": "string",
-            "defaultValue": "Citrix123456",
+            "defaultValue": "",
             "metadata": {
                 "description": "Password for hazelcast VMs, if authenticationType is set to 'password'"
             }
