@@ -1,7 +1,7 @@
 #! /bin/bash
-sudo apt update
-sudo apt install openjdk-8-jre-headless
-sudo apt install maven
+sudo apt update -y
+sudo apt install openjdk-8-jre-headless -y
+sudo apt install maven -y
 
 # Copy configuration files and install
 sudo mkdir /var/hazelcast
