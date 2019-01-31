@@ -6,6 +6,7 @@
         <name>dev</name>
         <password>dev-pass</password>
     </group>
+    <management-center enabled="false">management-center-url</management-center>
     <properties>
         <property name="hazelcast.discovery.enabled">true</property>
         <property name="hazelcast.shutdownhook.enabled">false</property> 

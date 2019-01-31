@@ -1,0 +1,18 @@
+#!/bin/bash
+MANCENTER_FLAG=$1
+MANCENTER_URL=$2
+
+if [ "$#" -ne 2 ]; then
+    echo "Illegal number of parameters. Usage: $0 true http://localhost:8080/mancenter"
+    exit 1
+fi
+
+sed -i -e "s/<management-center\(.*\)<\/management-center>.*/<management-center enabled=\"${MANCENTER_FLAG}\">${MANCENTER_URL//\//\\/}<\/management-center>/g" hazelcast.xml
+
+if [ "$?" -ne 0 ]; then
+    echo "Problem encountered in executing 'sed'"
+    exit 2
+fi
+
+echo "Update successful. Please restart the hazelcast server."
+exit 0

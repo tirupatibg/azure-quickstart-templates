@@ -191,6 +191,7 @@
             "[concat(parameters('templateBaseUrl'), 'hazelcast.xml')]",
             "[concat(parameters('templateBaseUrl'), 'install_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'modify_configuration')]",
+            "[concat(parameters('templateBaseUrl'), 'mancenter_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'pom.xml')]"
         ],
         "uniqueNames": {
