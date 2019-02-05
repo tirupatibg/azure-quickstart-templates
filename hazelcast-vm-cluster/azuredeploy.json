@@ -117,6 +117,13 @@
                 "description": "VNet name for hazelcast resource. It will be created if not exsits."
             }
         },
+        "virtualNetworkResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource group name where vNet located. Leave default if new vNet is created."
+            }
+        },
         "vNetNewOrExisting": {
             "type": "string",
             "defaultValue": "existing",
@@ -183,7 +190,7 @@
             "adminUsername": "[parameters('adminUsername')]",
             "computerName": "[variables('vmName')]"
         },
-        "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
+        "vNetRef": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
