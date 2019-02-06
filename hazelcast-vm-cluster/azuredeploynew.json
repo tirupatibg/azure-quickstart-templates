@@ -117,6 +117,13 @@
                 "description": "VNet name for hazelcast resource. It will be created if not exsits."
             }
         },
+        "virtualNetworkResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource group name where vNet located. Leave default if new vNet is created."
+            }
+        },
         "vNetNewOrExisting": {
             "type": "string",
             "defaultValue": "existing",
@@ -183,7 +190,7 @@
             "adminUsername": "[parameters('adminUsername')]",
             "computerName": "[variables('vmName')]"
         },
-        "vNetRef": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
+        "vNetRef": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
@@ -208,30 +215,48 @@
     },
     "resources": [
         {
-            "condition": "[equals(parameters('vNetNewOrExisting'), 'new')]",
-            "apiVersion": "2017-06-01",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('vNetName')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [],
+            "apiVersion": "2017-05-10",
+            "name": "createVNet",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('virtualNetworkResourceGroup')]",
             "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[parameters('vNetAddressPrefix')]"
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "condition": "[equals(parameters('vNetNewOrExisting'), 'new')]",
+                            "apiVersion": "2017-06-01",
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "name": "[parameters('vNetName')]",
+                            "location": "[resourceGroup().location]",
+                            "dependsOn": [],
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "[parameters('vNetAddressPrefix')]"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "apiVersion": "2017-05-10",
+                            "type": "Microsoft.Network/virtualNetworks/subnets",
+                            "name": "[concat(parameters('vNetName'), '/', parameters('subnetName'))]",
+                            "location": "[resourceGroup().location]",
+                            "dependsOn": [
+                                "[variables('vNetRef')]"
+                            ],
+                            "properties": {
+                                "addressPrefix": "[parameters('subnetAddressPrefix')]"
+                            }
+                        }
                     ]
-                }
-            }
-        },
-        {
-            "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "name": "[concat(parameters('vNetName'), '/', parameters('subnetName'))]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[variables('vNetRef')]"
-            ],
-            "properties": {
-                "addressPrefix": "[parameters('subnetAddressPrefix')]"
+                },
+                "parameters": {}
             }
         },
         {
@@ -240,7 +265,7 @@
             "name": "[variables('storageAccountName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[variables('subnetRef')]"
+                "createVNet"
             ],
             "tags": {
                 "hzr": "[parameters('clusterName')]"
