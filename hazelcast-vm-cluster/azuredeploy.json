@@ -126,7 +126,7 @@
         },
         "vNetNewOrExisting": {
             "type": "string",
-            "defaultValue": "existing",
+            "defaultValue": "new",
             "metadata": {
                 "description": "Is this a existing vNet or create new."
             },
