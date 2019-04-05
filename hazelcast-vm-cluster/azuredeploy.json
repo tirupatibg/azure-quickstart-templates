@@ -260,7 +260,7 @@
                             "name": "[concat(parameters('vNetName'), '/', parameters('subnetName'))]",
                             "location": "[resourceGroup().location]",
                             "dependsOn": [
-                                "[concat('Microsoft.Storage/networkSecurityGroups/', variables('nsgName'))]"
+                                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]"
                             ],
                             "properties": {
                                 "addressPrefix": "[parameters('subnetAddressPrefix')]",
