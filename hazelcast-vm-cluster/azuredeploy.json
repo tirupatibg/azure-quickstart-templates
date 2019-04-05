@@ -176,6 +176,7 @@
         "vNetAddressPrefix": "172.16.0.0/16",
         "vNetRef": "[resourceId(parameters('vNetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
+        "nsgName": "[concat(parameters('clusterName'), 'NSG')]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
@@ -227,15 +228,45 @@
                             }
                         },
                         {
-                            "apiVersion": "2015-05-01-preview",
-                            "type": "Microsoft.Network/virtualNetworks/subnets",
-                            "name": "[concat(parameters('vNetName'), '/', parameters('subnetName'))]",
+                            "apiVersion": "2015-06-15",
+                            "type": "Microsoft.Network/networkSecurityGroups",
+                            "name": "[variables('networkSecurityGroupName')]",
                             "location": "[resourceGroup().location]",
                             "dependsOn": [
                                 "[variables('vNetRef')]"
                             ],
                             "properties": {
-                                "addressPrefix": "[parameters('subnetAddressPrefix')]"
+                                "securityRules": [
+                                    {
+                                        "name": "AllowHazelcastInBound",
+                                        "properties": {
+                                            "description": "Allow inbound port for hazelcast cluster",
+                                            "protocol": "Tcp",
+                                            "sourcePortRange": "*",
+                                            "destinationPortRange": "5701",
+                                            "sourceAddressPrefix": "*",
+                                            "destinationAddressPrefix": "*",
+                                            "access": "Allow",
+                                            "priority": 1000,
+                                            "direction": "Inbound"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "apiVersion": "2015-05-01-preview",
+                            "type": "Microsoft.Network/virtualNetworks/subnets",
+                            "name": "[concat(parameters('vNetName'), '/', parameters('subnetName'))]",
+                            "location": "[resourceGroup().location]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Storage/networkSecurityGroups/', variables('nsgName'))]"
+                            ],
+                            "properties": {
+                                "addressPrefix": "[parameters('subnetAddressPrefix')]",
+                                "networkSecurityGroup": {
+                                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                                }
                             }
                         }
                     ]
