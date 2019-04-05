@@ -164,6 +164,7 @@
         "imageOffer": "UbuntuServer",
         "storageAccountName": "[concat(parameters('clusterName'), 'storage')]",
         "storageAccountType": "Standard_LRS",
+        "storageAccountRef": "[resourceId(resourceGroup().location, 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "nicName": "[parameters('clusterName')]",
         "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'vhds')]",
         "vmName": "[parameters('clusterName')]",
@@ -264,7 +265,8 @@
             "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "createVNet"
+                "createVNet",
+                "[variables('storageAccountRef')]"
             ],
             "tags": {
                 "hzr": "[parameters('clusterName')]"
