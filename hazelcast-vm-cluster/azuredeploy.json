@@ -230,7 +230,7 @@
                         {
                             "apiVersion": "2015-06-15",
                             "type": "Microsoft.Network/networkSecurityGroups",
-                            "name": "[variables('networkSecurityGroupName')]",
+                            "name": "[variables('nsgName')]",
                             "location": "[resourceGroup().location]",
                             "dependsOn": [
                                 "[variables('vNetRef')]"
