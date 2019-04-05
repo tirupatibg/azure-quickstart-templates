@@ -126,7 +126,7 @@
         },
         "subnetName": {
             "type": "string",
-            "defaultValue": "hzcluster-subnet",
+            "defaultValue": "hzclustersubnet",
             "metadata": {
                 "description": "Subnet name for hazelcast resources. It will be created if not exsits."
             }
@@ -162,10 +162,10 @@
     "variables": {
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
-        "storageAccountName": "[concat(parameters('clusterName'), '-storage')]",
+        "storageAccountName": "[concat(parameters('clusterName'), 'storage')]",
         "storageAccountType": "Standard_LRS",
         "nicName": "[parameters('clusterName')]",
-        "vmStorageAccountContainerName": "[concat(parameters('clusterName'), '-vhds')]",
+        "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'vhds')]",
         "vmName": "[parameters('clusterName')]",
         "osProfilePassword": {
             "adminPassword": "[parameters('adminPassword')]",
@@ -176,7 +176,7 @@
         "vNetAddressPrefix": "172.16.0.0/16",
         "vNetRef": "[resourceId(parameters('vNetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
-        "nsgName": "[concat(parameters('clusterName'), '-nsg')]",
+        "nsgName": "[concat(parameters('clusterName'), 'nsg')]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
