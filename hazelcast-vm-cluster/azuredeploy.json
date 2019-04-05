@@ -117,29 +117,11 @@
                 "description": "VNet name for hazelcast resource. It will be created if not exsits."
             }
         },
-        "virtualNetworkResourceGroup": {
+        "vNetResourceGroup": {
             "type": "string",
             "defaultValue": "[resourceGroup().name]",
             "metadata": {
                 "description": "Resource group name where vNet located. Leave default if new vNet is created."
-            }
-        },
-        "vNetNewOrExisting": {
-            "type": "string",
-            "defaultValue": "new",
-            "metadata": {
-                "description": "Is this a existing vNet or create new."
-            },
-            "allowedValues": [
-                "new",
-                "existing"
-            ]
-        },
-        "vNetAddressPrefix": {
-            "type": "string",
-            "defaultValue": "172.16.0.0/16",
-            "metadata": {
-                "description": "VNet address prefix, CIDR notation."
             }
         },
         "subnetName": {
@@ -190,7 +172,9 @@
             "adminUsername": "[parameters('adminUsername')]",
             "computerName": "[variables('vmName')]"
         },
-        "vNetRef": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
+        "vNetNewOrExisting": "Existing",
+        "vNetAddressPrefix": "172.16.0.0/16",
+        "vNetRef": "[resourceId(parameters('vNetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
@@ -218,7 +202,7 @@
             "apiVersion": "2018-02-01",
             "name": "createVNet",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('virtualNetworkResourceGroup')]",
+            "resourceGroup": "[parameters('vNetResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -228,7 +212,7 @@
                     "variables": {},
                     "resources": [
                         {
-                            "condition": "[equals(parameters('vNetNewOrExisting'), 'new')]",
+                            "condition": "[equals(variables('vNetNewOrExisting'), 'New')]",
                             "apiVersion": "2017-06-01",
                             "type": "Microsoft.Network/virtualNetworks",
                             "name": "[parameters('vNetName')]",
@@ -237,7 +221,7 @@
                             "properties": {
                                 "addressSpace": {
                                     "addressPrefixes": [
-                                        "[parameters('vNetAddressPrefix')]"
+                                        "[variables('vNetAddressPrefix')]"
                                     ]
                                 }
                             }
