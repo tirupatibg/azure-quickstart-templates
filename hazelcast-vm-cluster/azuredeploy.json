@@ -126,7 +126,7 @@
         },
         "subnetName": {
             "type": "string",
-            "defaultValue": "hzclustersubnet",
+            "defaultValue": "hzcluster-subnet",
             "metadata": {
                 "description": "Subnet name for hazelcast resources. It will be created if not exsits."
             }
@@ -162,10 +162,10 @@
     "variables": {
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
-        "storageAccountName": "[concat(parameters('clusterName'), 'storage')]",
+        "storageAccountName": "[concat(parameters('clusterName'), '-storage')]",
         "storageAccountType": "Standard_LRS",
         "nicName": "[parameters('clusterName')]",
-        "vmStorageAccountContainerName": "[concat(parameters('clusterName'), 'vhds')]",
+        "vmStorageAccountContainerName": "[concat(parameters('clusterName'), '-vhds')]",
         "vmName": "[parameters('clusterName')]",
         "osProfilePassword": {
             "adminPassword": "[parameters('adminPassword')]",
@@ -176,7 +176,7 @@
         "vNetAddressPrefix": "172.16.0.0/16",
         "vNetRef": "[resourceId(parameters('vNetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
-        "nsgName": "[concat(parameters('clusterName'), 'NSG')]",
+        "nsgName": "[concat(parameters('clusterName'), '-nsg')]",
         "bootstrapFiles": [
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
@@ -292,7 +292,7 @@
         {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+            "name": "[concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "CreateNetworkComponents"
@@ -321,11 +321,11 @@
         {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+            "name": "[concat(variables('vmName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-vm')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name)]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic')]",
                 "createNics"
             ],
             "tags": {
@@ -356,7 +356,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), 'NIC', variables('uniqueNames').uniqueArray[copyIndex(0)].name))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-nic'))]"
                         }
                     ]
                 }
