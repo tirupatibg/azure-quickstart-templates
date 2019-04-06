@@ -234,25 +234,7 @@
                             "location": "[resourceGroup().location]",
                             "dependsOn": [
                                 "[variables('vNetRef')]"
-                            ],
-                            "properties": {
-                                "securityRules": [
-                                    {
-                                        "name": "AllowHazelcastInBound",
-                                        "properties": {
-                                            "description": "Allow inbound port for hazelcast cluster",
-                                            "protocol": "Tcp",
-                                            "sourcePortRange": "*",
-                                            "destinationPortRange": "5701",
-                                            "sourceAddressPrefix": "*",
-                                            "destinationAddressPrefix": "*",
-                                            "access": "Allow",
-                                            "priority": 1000,
-                                            "direction": "Inbound"
-                                        }
-                                    }
-                                ]
-                            }
+                            ]
                         },
                         {
                             "apiVersion": "2015-05-01-preview",
@@ -369,7 +351,7 @@
         {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'), 'VM', variables('uniqueNames').uniqueArray[copyIndex(0)].name, '/initHazelcast')]",
+            "name": "[concat(variables('vmName'), variables('uniqueNames').uniqueArray[copyIndex(0)].name, '-vm', '/initHazelcast')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "createVms"
