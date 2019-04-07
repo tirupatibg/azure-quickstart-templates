@@ -39,9 +39,8 @@
         },
         "clusterName": {
             "type": "string",
-            "defaultValue": "hzcluster",
             "metadata": {
-                "description": "The tag used to identify this cluster"
+                "description": "The name of the hazelcast cluster"
             }
         },
         "clusterPort": {
@@ -112,7 +111,6 @@
         },
         "vNetName": {
             "type": "string",
-            "defaultValue": "hzclusterVNet",
             "metadata": {
                 "description": "VNet name for hazelcast resource. It will be created if not exsits."
             }
@@ -126,7 +124,7 @@
         },
         "subnetName": {
             "type": "string",
-            "defaultValue": "hzclustersubnet",
+            "defaultValue": "[concat(parameters('clusterName'), 'subnet')]",
             "metadata": {
                 "description": "Subnet name for hazelcast resources. It will be created if not exsits."
             }
