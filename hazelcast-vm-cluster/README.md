@@ -18,9 +18,11 @@ You'll need to setup [Azure Active Directory Service Principal credentials](http
 
 ## Architecture
 
-As per the new architecture, each CEM resource group will have multiple PODs and two hazelcast clusters, blue & green. Blue & Green PODs will connects to blue & green hz clusters respectively. Blue and Green HZ clusters are completely independent. There may be a data loss of non-persistent data between blue and green HZ clusters during switch. However, CEM has very limited use cases associated to non-persistent data. With short TTL and switching the entire tenant traffic to green cluster instantainously, affect data loss is mitigated.
+As per the new architecture, each CEM region deployment will have multiple PODs served by two hazelcast clusters, blue & green. Blue & Green PODs will connects to blue & green hz clusters respectively. These HZ clusters are completely independent, won't share anything. They will align with the canary rollout of CEM.
 
-For hazelcast version upgrade, green hz cluster will be provisioned with with upgraded vesion and CEM traffic will be routed once deployment & connectivity is successful.
+For hazelcast version upgrade, green hz cluster will be provisioned with upgraded hazelcast vesion, CEM green PODs will connects to new cluster and CEM traffic will be routed green PODS after successful deployment.
+
+There may be a data loss of non-persistent data between blue and green HZ clusters during switch. However, CEM has very limited use cases associated to non-persistent data. With short TTL and switching the entire tenant traffic to green cluster instantainously, affect data loss is mitigated.
 
 HZ cluster will be provisioned in the same resource group where CEM PODs resides.
 
