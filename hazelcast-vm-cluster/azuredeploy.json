@@ -152,10 +152,10 @@
                 "description": "The base URL for the bootstrap files"
             }
         },
-        "randomString": {
-            "type": "string",
+        "nodeStartIndex": {
+            "type": "int",
             "metadata": {
-                "description": "To resolve resource name conflicts with hash."
+                "description": "Index will be used to enforce uniqueness on node names. Value should be no. of existing nodes + 1."
             }
         }
     },
@@ -192,7 +192,7 @@
                     "name": "uniqueArray",
                     "count": "[parameters('instanceCount')]",
                     "input": {
-                        "name": "[concat(uniqueString(resourceGroup().id, deployment().name, parameters('randomString')), copyIndex('uniqueArray', 1))]"
+                        "name": "[concat(uniqueString(resourceGroup().id, deployment().name, parameters('clusterName')), copyIndex('uniqueArray', parameters('nodeStartIndex') + 1))]"
                     }
                 }
             ]
