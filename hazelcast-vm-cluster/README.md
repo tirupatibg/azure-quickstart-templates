@@ -15,3 +15,59 @@ Checkout Hazelcast's [official documentation](https://hazelcast.org/documentatio
 This template deploys resources that need read access the mangaement api's for the resource group this template is deployed to.
 
 You'll need to setup [Azure Active Directory Service Principal credentials](https://azure.microsoft.com/en-us/documentation/articles/resource-group-create-service-principal-portal/) for your Azure Subscription for this plugin to work. With the credentials, fill in the `aadClientId`, `aadClientSecret`, and `aadTenantId` parameters.
+
+## Architecture
+
+As per the new architecture, each CEM resource group will have multiple PODs and two hazelcast clusters, blue & green. Blue & Green PODs will connects to blue & green hz clusters respectively. Blue and Green HZ clusters are completely independent. There may be a data loss of non-persistent data between blue and green HZ clusters during switch. However, CEM has very limited use cases associated to non-persistent data. With short TTL and switching the entire tenant traffic to green cluster instantainously, affect data loss is mitigated.
+
+For hazelcast version upgrade, green hz cluster will be provisioned with with upgraded vesion and CEM traffic will be routed once deployment & connectivity is successful.
+
+HZ cluster will be provisioned in the same resource group where CEM PODs resides.
+
+Please refer [MT Architecture]() for additional info.
+
+## How to Provision
+
+This template can be used to create a new hazelcast cluster or add nodes to existing cluster.
+
+Prerequisites -
+> Resource group and vnet should pre provisioned.
+
+###### Provision New HZ Cluster
+Following command can be used to provision the HZ cluster
+```
+az group deployment create \
+  --subscription [AZURE-SUBSCRIPTION] \
+  --name HZClusterDeployment \
+  --resource-group [RESOURCE-GROUP-NAME] \
+  --template-uri https://raw.githubusercontent.com/srinusanchula/azure-quickstart-templates/master/hazelcast-vm-cluster/azuredeploy.json \
+  --parameters clusterName=[hzbluecluster|hzgreencluster] \
+  --parameters adminPassword=[CLUSTER-PASSWORD] \
+  --parameters aadClientId=[AAD-CLIENT-ID] \
+  --parameters aadClientSecret=[AAD-CLIENT-SECRET] \
+  --parameters aadTenantId=[AAD-TENANT-ID] \
+  --parameters vNetName=[VNET-NAME] \
+  --parameters subnetAddressPrefix=[SUBNET-ADDRESS-RANGE] \
+  --parameters nodeStartIndex=1
+```
+
+###### Parameter Description
+- `clusterName` Either 'hzbluecluster' or 'hzgreencluster'.
+- `adminUsername` Default user name 'dev'.
+- `clusterUsername` By default `adminUsername` is used as `clusterUsername`.
+- `adminPassword` Root user password for the VM.
+- `clusterPassword` By default `adminPassword` is used as `clusterPassword`.
+- `subnetAddressPrefix` Subnet address range for hazelcast nodes. It's recommended that blue & green cluster nodes stays in a separate subnets. Ex: 10.0.253.0/24 for blue & 10.0.254.0/24 for green clusters. BTW, it should align with the address space of VNET.
+- `instanceCount` Default 2.
+
+###### Add Nodes to Existing Cluster
+Same command as above including parameter values, except `nodeStartIndex` parameter. Value for nodeStartIndex should be (no.of nodes that are already provisioned + 1). Ex: if there are 2 nodes in existing cluster, then nodeStartIndex should be 3.
+
+###### Created Components
+These are the list of components that are created after successful provision.
+1. Subnet for the cluster will be added to the VNET.
+2. NSG (network security group) for the subnet.
+3. One storage account
+4. NIC and VM pairs as per the instanceCount.
+
+Note: While adding the nodes, subnet, NSG and Storage account are reused.

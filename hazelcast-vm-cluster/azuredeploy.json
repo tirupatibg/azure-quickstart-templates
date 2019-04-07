@@ -16,7 +16,7 @@
                 "description": "Password for hazelcast VMs, if authenticationType is set to 'password'"
             }
         },
-        "clusterUserName": {
+        "clusterUsername": {
             "type": "string",
             "defaultValue": "[parameters('adminUsername')]",
             "metadata": {
@@ -131,7 +131,7 @@
         },
         "subnetAddressPrefix": {
             "type": "string",
-            "defaultValue": "172.16.250.0/24",
+            "defaultValue": "10.0.253.0/24",
             "metadata": {
                 "description": "Subnet address for hazelcast resources ex: 10.0.250.0/24, CIDR notation."
             }
@@ -171,7 +171,7 @@
             "computerName": "[variables('vmName')]"
         },
         "vNetNewOrExisting": "Existing",
-        "vNetAddressPrefix": "172.16.0.0/16",
+        "vNetAddressPrefix": "10.0.0.0/16",
         "vNetRef": "[resourceId(parameters('vNetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
         "subnetRef": "[concat(variables('vNetRef'), '/subnets/', parameters('subnetName'))]",
         "nsgName": "[concat(parameters('clusterName'), 'nsg')]",
@@ -364,7 +364,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": "[variables('bootstrapFiles')]",
-                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUserName'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'), ' ', parameters('hazelcastVersion'))]"
+                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUsername'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'), ' ', parameters('hazelcastVersion'))]"
                 }
             },
             "copy": {
