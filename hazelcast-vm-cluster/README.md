@@ -4,7 +4,7 @@
 
 [Hazelcast](https://hazelcast.org) is an in-memory data platform which can support a variety of data applications such as data grids, nosql data stores, caching and web session clustering.
 
-This template will deploy any number of Ubuntu Hazelcast nodes in a vnet using the [official Hazelcast Azure Discovery Provider](https://github.com/hazelcast/hazelcast-azure). Every node is installed with Hazelcast as an [systemd service](https://www.digitalocean.com/community/tutorials/systemd-essentials-working-with-services-units-and-the-journal) and will continue to run even after subsequent restarts. Each node will discover every other node on the network automatically so you can add and remove nodes as you see fit.
+This template will deploy any number of Ubuntu Hazelcast instances in a vnet using the [official Hazelcast Azure Discovery Provider](https://github.com/hazelcast/hazelcast-azure). Every instance is installed with Hazelcast as an [systemd service](https://www.digitalocean.com/community/tutorials/systemd-essentials-working-with-services-units-and-the-journal) and will continue to run even after subsequent restarts. Each instance will discover every other instance on the network automatically so you can add and remove instances as you see fit.
 
 Use the **Deploy to Azure** button above to get started.
 
@@ -28,10 +28,10 @@ Please refer [MT Architecture]() for additional info.
 
 ## How to Provision
 
-This template can be used to create a new hazelcast cluster or add nodes to existing cluster.
+This template can be used to create a new hazelcast cluster or add instances to existing cluster.
 
 Prerequisites -
-> Resource group and vnet should pre provisioned.
+> Resource group and vnet should be pre provisioned.
 
 ###### Provision New HZ Cluster
 Following command can be used to provision the HZ cluster
@@ -48,7 +48,7 @@ az group deployment create \
   --parameters aadTenantId=[AAD-TENANT-ID] \
   --parameters vNetName=[VNET-NAME] \
   --parameters subnetAddressPrefix=[SUBNET-ADDRESS-RANGE] \
-  --parameters nodeStartIndex=1
+  --parameters instanceStartIndex=1
 ```
 
 ###### Parameter Description
@@ -57,11 +57,11 @@ az group deployment create \
 - `clusterUsername` By default `adminUsername` is used as `clusterUsername`.
 - `adminPassword` Root user password for the VM.
 - `clusterPassword` By default `adminPassword` is used as `clusterPassword`.
-- `subnetAddressPrefix` Subnet address range for hazelcast nodes. It's recommended that blue & green cluster nodes stays in a separate subnets. Ex: 10.0.253.0/24 for blue & 10.0.254.0/24 for green clusters. BTW, it should align with the address space of VNET.
+- `subnetAddressPrefix` Subnet address range for hazelcast instances. It's recommended that blue & green cluster instances stays in a separate subnets. Ex: 10.0.253.0/24 for blue & 10.0.254.0/24 for green clusters. BTW, it should align with the address space of VNET.
 - `instanceCount` Default 2.
 
-###### Add Nodes to Existing Cluster
-Same command as above including parameter values, except `nodeStartIndex` parameter. Value for nodeStartIndex should be (no.of nodes that are already provisioned + 1). Ex: if there are 2 nodes in existing cluster, then nodeStartIndex should be 3.
+###### Add Instances to an Existing Cluster
+Same command as above including parameter values, except `instanceStartIndex` parameter. Value for instanceStartIndex should be 'instance count of existing hz cluster + 1'. Ex: if there are 2 instance in existing cluster, then the instanceStartIndex should be 3.
 
 ###### Created Components
 These are the list of components that are created after successful provision.
@@ -70,4 +70,4 @@ These are the list of components that are created after successful provision.
 3. One storage account
 4. NIC and VM pairs as per the instanceCount.
 
-Note: While adding the nodes, subnet, NSG and Storage account are reused.
+Note: While adding the instances, subnet, NSG and Storage account are reused.

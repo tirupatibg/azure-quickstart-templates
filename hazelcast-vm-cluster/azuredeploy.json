@@ -34,7 +34,7 @@
             "type": "int",
             "defaultValue": 2,
             "metadata": {
-                "description": "The number of hazelcast nodes in the grid"
+                "description": "The number of hazelcast instances in the cluster"
             }
         },
         "clusterName": {
@@ -102,7 +102,7 @@
             "type": "string",
             "defaultValue": "18.04-LTS",
             "metadata": {
-                "description": "The Ubuntu version for hazelcast nodes. This will pick a fully patched image of this given Ubuntu version."
+                "description": "The Ubuntu version of hazelcast instance. This will pick a fully patched image of this given Ubuntu version."
             },
             "allowedValues": [
                 "16.04-LTS",
@@ -150,10 +150,10 @@
                 "description": "The base URL for the bootstrap files"
             }
         },
-        "nodeStartIndex": {
+        "instanceStartIndex": {
             "type": "int",
             "metadata": {
-                "description": "Index will be used to enforce uniqueness on node names. Value should be no. of existing nodes + 1."
+                "description": "Index will be used to enforce uniqueness on instance names. Value should be no. of existing instances + 1."
             }
         }
     },
@@ -190,7 +190,7 @@
                     "name": "uniqueArray",
                     "count": "[parameters('instanceCount')]",
                     "input": {
-                        "name": "[concat(uniqueString(resourceGroup().id, deployment().name, parameters('clusterName')), copyIndex('uniqueArray', parameters('nodeStartIndex')))]"
+                        "name": "[concat(uniqueString(resourceGroup().id, deployment().name, parameters('clusterName')), copyIndex('uniqueArray', parameters('instanceStartIndex')))]"
                     }
                 }
             ]
