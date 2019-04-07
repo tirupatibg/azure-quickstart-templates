@@ -30,11 +30,11 @@ Please refer [MT Architecture]() for additional info.
 
 This template can be used to create a new hazelcast cluster or add instances to existing cluster.
 
-Prerequisites -
+###### Prerequisites
 > Resource group and vnet should be pre provisioned.
 
-###### Provision New HZ Cluster
-Following command can be used to provision the HZ cluster
+###### Create New HZ Cluster
+Following command can be used to create new HZ cluster
 ```
 az group deployment create \
   --subscription [AZURE-SUBSCRIPTION] \
