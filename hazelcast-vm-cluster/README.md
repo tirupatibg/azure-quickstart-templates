@@ -41,7 +41,7 @@ az group deployment create \
   --name HZClusterDeployment \
   --resource-group [RESOURCE-GROUP-NAME] \
   --template-uri https://raw.githubusercontent.com/srinusanchula/azure-quickstart-templates/master/hazelcast-vm-cluster/azuredeploy.json \
-  --parameters clusterName=[hzbluecluster|hzgreencluster] \
+  --parameters clusterName=[CLUSTER-NAME] \
   --parameters adminPassword=[CLUSTER-PASSWORD] \
   --parameters aadClientId=[AAD-CLIENT-ID] \
   --parameters aadClientSecret=[AAD-CLIENT-SECRET] \
@@ -52,7 +52,7 @@ az group deployment create \
 ```
 
 ###### Parameter Description
-- `clusterName` Either 'hzbluecluster' or 'hzgreencluster'.
+- `clusterName` Cluster name. Ex: 'hzbluecluster' or 'hzgreencluster'.
 - `adminUsername` Default user name 'dev'.
 - `clusterUsername` By default `adminUsername` is used as `clusterUsername`.
 - `adminPassword` Root user password for the VM.
