@@ -59,7 +59,7 @@ az group deployment create \
 - `clusterUsername` By default `adminUsername` is used as `clusterUsername`.
 - `adminPassword` Root user password for the VM.
 - `clusterPassword` By default `adminPassword` is used as `clusterPassword`.
-- `subnetAddressPrefix` Subnet address range for hazelcast instances. It's recommended that blue & green cluster instances stays in a separate subnets. Ex: 10.0.253.0/24 for blue & 10.0.254.0/24 for green clusters. BTW, it should align with the address space of VNET.
+- `subnetAddressPrefix` Subnet address range for hazelcast instances. It's recommended that blue & green cluster instances stays in a separate subnets. Ex: 10.1.253.0/24 for blue & 10.1.254.0/24 for green clusters. BTW, it should align with the address space of VNET.
 - `instanceCount` Default 2.
 - `instanceStartIndex`: This index is used to enforce the uniqueness on instance name. Value should be no. of existing instances + 1.
 
