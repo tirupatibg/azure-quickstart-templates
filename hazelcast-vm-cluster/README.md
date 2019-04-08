@@ -50,6 +50,7 @@ az group deployment create \
   --parameters aadTenantId=[AAD-TENANT-ID] \
   --parameters vNetName=[VNET-NAME] \
   --parameters subnetAddressPrefix=[SUBNET-ADDRESS-RANGE] \
+  --parameters hazelcastVersion=[HAZELCAST-VERSION] \
   --parameters instanceStartIndex=1
 ```
 
@@ -60,6 +61,7 @@ az group deployment create \
 - `adminPassword` Root user password for the VM.
 - `clusterPassword` By default `adminPassword` is used as `clusterPassword`.
 - `subnetAddressPrefix` Subnet address range for hazelcast instances. It's recommended that blue & green cluster instances stays in a separate subnets. Ex: 10.1.253.0/24 for blue & 10.1.254.0/24 for green clusters. BTW, it should align with the address space of VNET.
+- `hazelcastVersion` Default 3.10.1.
 - `instanceCount` Default 2.
 - `instanceStartIndex`: This index is used to enforce the uniqueness on instance name. Value should be no. of existing instances + 1.
 
