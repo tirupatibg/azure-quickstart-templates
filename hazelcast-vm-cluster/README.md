@@ -22,7 +22,7 @@ As per the new architecture, each CEM region deployment will have multiple PODs 
 
 For hazelcast version upgrade, green hz cluster will be provisioned with upgraded hazelcast vesion, CEM green PODs will connects to new cluster and CEM traffic will be routed green PODS after successful deployment.
 
-There may be a data loss of non-persistent data between blue and green HZ clusters during switch. However, CEM has very limited use cases associated to non-persistent data. With short TTL and switching the entire tenant traffic to green cluster instantainously, affect data loss is mitigated.
+There may be a data loss of non-persistent data between blue and green HZ clusters during switch. However, CEM has very limited use cases associated to non-persistent data. With short TTL and switching the entire tenant traffic to green cluster instantainously, the affect data loss is mitigated.
 
 HZ cluster will be provisioned in the same resource group where CEM PODs resides.
 
@@ -61,6 +61,7 @@ az group deployment create \
 - `clusterPassword` By default `adminPassword` is used as `clusterPassword`.
 - `subnetAddressPrefix` Subnet address range for hazelcast instances. It's recommended that blue & green cluster instances stays in a separate subnets. Ex: 10.0.253.0/24 for blue & 10.0.254.0/24 for green clusters. BTW, it should align with the address space of VNET.
 - `instanceCount` Default 2.
+- `instanceStartIndex`: This index is used to enforce the uniqueness on instance name. Value should be no. of existing instances + 1.
 
 ###### Add Instances to an Existing Cluster
 Same command as above including parameter values, except `instanceStartIndex` parameter. Value for instanceStartIndex should be 'instance count of existing hz cluster + 1'. Ex: if there are 2 instance in existing cluster, then the instanceStartIndex should be 3.
@@ -73,3 +74,11 @@ These are the list of components that are created after successful provision.
 4. NIC and VM pairs as per the instanceCount.
 
 Note: While adding the instances, subnet, NSG and Storage account are reused.
+
+###### Blue and Green HZ cluster
+As described above, both of these blue and green HZ clusters resides in the same resource group. Following are the 2 parameters that differentiate these clusters.
+```
+clusterName - It should be either 'hzbluecluster' or 'hzgreencluster'
+subnetAddressPrefix - Different subnets as described above
+```
+The CEM HZ client auto-discovery service will make use of the `clusterName` (clusterName will be used as a VM tag at HZ instance) to properly resolve the ipAddresses of blue or green HZ cluster.
