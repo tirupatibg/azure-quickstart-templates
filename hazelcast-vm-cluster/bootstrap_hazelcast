@@ -11,10 +11,11 @@ AAD_TENANT_ID=$8
 GROUP_NAME=$9
 CLUSTER_TAG=${10}
 HAZELCAST_VERSION=${11}
+DEPLOYEMENT_TYPE=${12}
 
 chmod +x modify_configuration
 # Update hazelcast discovery strategy
-./modify_configuration --cluster-name=$CLUSTER_NAME --cluster-password=$CLUSTER_PASSWORD --subscription-id=$SUBSCRIPTION_ID --aad-client-id=$AAD_CLIENT_ID --aad-client-secret=$AAD_CLIENT_SECRET --tenant-id=$AAD_TENANT_ID --group-name=$GROUP_NAME --cluster-tag=$CLUSTER_TAG --filename=hazelcast.xml
+./modify_configuration --cluster-name=$CLUSTER_NAME --cluster-password=$CLUSTER_PASSWORD --subscription-id=$SUBSCRIPTION_ID --aad-client-id=$AAD_CLIENT_ID --aad-client-secret=$AAD_CLIENT_SECRET --tenant-id=$AAD_TENANT_ID --group-name=$GROUP_NAME --cluster-tag=$CLUSTER_TAG --deployement-type=$DEPLOYEMENT_TYPE --filename=hazelcast.xml
 # Update hazelcast version, default version 3.7.2
 sudo sed -i "s/3.7.2/${HAZELCAST_VERSION}/g" pom.xml
 # Update min and max heap

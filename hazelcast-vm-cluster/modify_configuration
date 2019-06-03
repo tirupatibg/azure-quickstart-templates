@@ -22,6 +22,7 @@ if __name__ == "__main__":
     parser.add_option("-c","--aad-client-secret",dest="aad_client_secret")
     parser.add_option("-g","--group-name",dest="group_name")
     parser.add_option("-l","--cluster-tag",dest="cluster_tag")
+    parser.add_option("-d","--deployement-type",dest="deployement_type")
     parser.add_option("-f","--filename",dest="filename")
     if len(sys.argv) > 0:
         opts,args = parser.parse_args(sys.argv)
@@ -54,6 +55,10 @@ if __name__ == "__main__":
                     properties.find("*/[@name='client-secret']").text = opts.aad_client_secret
                     properties.find("*/[@name='group-name']").text = opts.group_name
                     properties.find("*/[@name='cluster-id']").text = opts.cluster_tag
+                print(opts.deployement_type)    
+                if opts.deployement_type.lower() == "gov":
+                    strategy.set("class","com.hazelcast.azure.gov.us.AzureGovUSDiscoveryStrategy") 
+		            
             print("Updated discovery strategy nodes...")
         
             tree.write(opts.filename)

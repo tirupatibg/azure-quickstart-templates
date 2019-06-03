@@ -143,9 +143,20 @@
                 "description": "Hazelcast version."
             }
         },
+        "deployementType": {
+            "allowedValues": [
+                "gov",
+                "commercial"
+            ],
+            "defaultValue": "commercial",
+            "type": "String",
+            "metadata": {
+                "description": "the deployement type used to identify the deployement mode either gov or commercial"
+            }
+        },        
         "templateBaseUrl": {
             "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/srinusanchula/azure-quickstart-templates/master/hazelcast-vm-cluster/",
+            "defaultValue": "https://raw.githubusercontent.com/tirupatibg/azure-quickstart-templates/master/hazelcast-vm-cluster/",
             "metadata": {
                 "description": "The base URL for the bootstrap files"
             }
@@ -364,7 +375,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": "[variables('bootstrapFiles')]",
-                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUsername'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'), ' ', parameters('hazelcastVersion'))]"
+                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUsername'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'), ' ', parameters('hazelcastVersion'), parameters('deployementType'))]"
                 }
             },
             "copy": {
