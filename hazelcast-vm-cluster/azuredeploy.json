@@ -190,6 +190,7 @@
             "[concat(parameters('templateBaseUrl'), 'bootstrap_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast-server.service')]",
             "[concat(parameters('templateBaseUrl'), 'hazelcast.xml')]",
+            "[concat(parameters('templateBaseUrl'), 'hazelcast-azure-gov-us-1.0.jar')]",
             "[concat(parameters('templateBaseUrl'), 'install_hazelcast')]",
             "[concat(parameters('templateBaseUrl'), 'modify_configuration')]",
             "[concat(parameters('templateBaseUrl'), 'mancenter_hazelcast')]",
