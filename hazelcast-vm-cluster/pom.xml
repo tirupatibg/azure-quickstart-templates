@@ -10,7 +10,19 @@
   <version>1.0</version>
   <name>Hazelcast Grid</name>
 
+  <repositories>
+    <repository>
+      <id>maven-repository</id>
+      <url>file:///var/hz/mvn-repo</url>
+    </repository>
+  </repositories>
+
   <dependencies>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast-azure-gov-us</artifactId>
+      <version>1.0</version>
+    </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
