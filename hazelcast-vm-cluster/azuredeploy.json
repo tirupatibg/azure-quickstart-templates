@@ -149,7 +149,7 @@
                 "commercial"
             ],
             "defaultValue": "commercial",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "the deployement type used to identify the deployement mode either gov or commercial"
             }
