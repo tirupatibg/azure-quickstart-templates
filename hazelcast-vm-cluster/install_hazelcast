@@ -5,8 +5,10 @@ sudo apt install maven -y
 
 # Copy configuration files and install
 sudo mkdir /var/hazelcast
+sudo mkdir -p /var/hz/mvn-repo
 sudo cp mancenter_hazelcast /var/hazelcast
 chmod +x /var/hazelcast/mancenter_hazelcast
 sudo cp pom.xml /var/hazelcast
+sudo mvn deploy:deploy-file -Dfile=hazelcast-azure-gov-us-1.0.jar -DgroupId=com.hazelcast -DartifactId=hazelcast-azure-gov-us -Dversion=1.0 -Durl=file:/var/hz/mvn-repo/ -Dpackaging=jar -DrepositoryId=maven-repository -DupdateReleaseInfo=true
 sudo mvn install
 sudo cp ./hazelcast.xml /var/hazelcast/
