@@ -376,7 +376,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": "[variables('bootstrapFiles')]",
-                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUsername'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'), ' ', parameters('hazelcastVersion'), parameters('deployementType'))]"
+                    "commandToExecute": "[concat('sh bootstrap_hazelcast ', parameters('minHeapSizeInGB'), ' ', parameters('maxHeapSizeInGB'), ' ', parameters('clusterUsername'), ' ', parameters('clusterPassword'), ' ', subscription().subscriptionId, ' ', parameters('aadClientId'), ' ',  parameters('aadClientSecret'), ' ',  parameters('aadTenantId'), ' ', resourceGroup().name, ' ', parameters('clusterName'), ' ', parameters('hazelcastVersion'), ' ', parameters('deployementType'))]"
                 }
             },
             "copy": {
