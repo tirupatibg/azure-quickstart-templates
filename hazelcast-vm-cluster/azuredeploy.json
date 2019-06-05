@@ -145,7 +145,7 @@
         },
         "deployementType": {
             "allowedValues": [
-                "gov",
+                "us-gov",
                 "commercial"
             ],
             "defaultValue": "commercial",

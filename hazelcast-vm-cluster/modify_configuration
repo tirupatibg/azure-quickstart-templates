@@ -56,7 +56,7 @@ if __name__ == "__main__":
                     properties.find("*/[@name='group-name']").text = opts.group_name
                     properties.find("*/[@name='cluster-id']").text = opts.cluster_tag
                 print(opts.deployement_type)    
-                if opts.deployement_type.lower() == "gov":
+                if opts.deployement_type.lower() == "us-gov":
                     strategy.set("class","com.hazelcast.azure.gov.us.AzureGovUSDiscoveryStrategy") 
 		            
             print("Updated discovery strategy nodes...")
