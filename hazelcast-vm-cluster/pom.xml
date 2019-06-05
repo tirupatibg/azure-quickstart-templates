@@ -13,7 +13,7 @@
   <repositories>
     <repository>
       <id>maven-repository</id>
-      <url>file:///var/hz/mvn-repo</url>
+      <url>file:///var/hazelcast/mvn-repo</url>
     </repository>
   </repositories>
 
